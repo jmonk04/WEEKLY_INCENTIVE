@@ -3017,78 +3017,178 @@
         
         function drawZeusTierOps(ctx, startY, canvasWidth) {
             let y = startY;
+            let rankCounter = 1;
             
-            const zeusStations = processedData.filter(s => s.TIER === 'ZEUS');
-            if (zeusStations.length === 0) return y;
+            // Zeus Level 3
+            const zeusL3 = processedData.filter(s => s.TIER === 'ZEUS' && s.LEVEL === 3);
+            if (zeusL3.length > 0) {
+                const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+                gradient.addColorStop(0, COLORS.ZEUS_GOLD);
+                gradient.addColorStop(1, COLORS.GOLD);
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+                
+                ctx.fillStyle = COLORS.NAVY_DARK;
+                ctx.font = 'bold 16px "Barlow Condensed"';
+                ctx.textAlign = 'left';
+                ctx.fillText('⚡ ZEUS TIER Level 3', 80, y + 18);
+                ctx.font = '11px Inter';
+                ctx.fillText('Recurring 96-hour special liberty', 80, y + 32);
+                
+                y += 50;
+                y = drawTierCards(ctx, zeusL3, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
+                rankCounter += zeusL3.length;
+                y += 15;
+            }
             
-            const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
-            gradient.addColorStop(0, COLORS.ZEUS_GOLD);
-            gradient.addColorStop(1, COLORS.GOLD);
-            ctx.fillStyle = gradient;
-            roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+            // Zeus Level 2
+            const zeusL2 = processedData.filter(s => s.TIER === 'ZEUS' && s.LEVEL === 2);
+            if (zeusL2.length > 0) {
+                const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+                gradient.addColorStop(0, COLORS.ZEUS_GOLD);
+                gradient.addColorStop(1, COLORS.GOLD);
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+                
+                ctx.fillStyle = COLORS.NAVY_DARK;
+                ctx.font = 'bold 16px "Barlow Condensed"';
+                ctx.textAlign = 'left';
+                ctx.fillText('⚡ ZEUS TIER Level 2', 80, y + 18);
+                ctx.font = '11px Inter';
+                ctx.fillText('Recurring 72-hour special liberty', 80, y + 32);
+                
+                y += 50;
+                y = drawTierCards(ctx, zeusL2, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
+                rankCounter += zeusL2.length;
+                y += 15;
+            }
             
-            ctx.fillStyle = COLORS.NAVY_DARK;
-            ctx.font = 'bold 20px "Barlow Condensed"';
-            ctx.textAlign = 'left';
-            ctx.fillText('⚡ ZEUS TIER (≥140% ALNAV)', 80, y + 25);
+            // Zeus Level 1
+            const zeusL1 = processedData.filter(s => s.TIER === 'ZEUS' && s.LEVEL === 1);
+            if (zeusL1.length > 0) {
+                const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+                gradient.addColorStop(0, COLORS.ZEUS_GOLD);
+                gradient.addColorStop(1, COLORS.GOLD);
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+                
+                ctx.fillStyle = COLORS.NAVY_DARK;
+                ctx.font = 'bold 16px "Barlow Condensed"';
+                ctx.textAlign = 'left';
+                ctx.fillText('⚡ ZEUS TIER Level 1', 80, y + 18);
+                ctx.font = '11px Inter';
+                ctx.fillText('96-hour special liberty (one time per quarter)', 80, y + 32);
+                
+                y += 50;
+                y = drawTierCards(ctx, zeusL1, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
+                y += 15;
+            }
             
-            y += 50;
-            
-            y = drawTierCards(ctx, zeusStations, y, canvasWidth, COLORS.ZEUS_GOLD, 1);
-            
-            return y + 15;
+            return y;
         }
         
         function drawPoseidonTierOps(ctx, startY, canvasWidth) {
             let y = startY;
             
-            const poseidonStations = processedData.filter(s => s.TIER === 'POSEIDON');
-            if (poseidonStations.length === 0) return y;
-            
             const zeusCount = processedData.filter(s => s.TIER === 'ZEUS').length;
+            let rankCounter = zeusCount + 1;
             
-            const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
-            gradient.addColorStop(0, COLORS.POSEIDON_BLUE);
-            gradient.addColorStop(1, '#1565C0');
-            ctx.fillStyle = gradient;
-            roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+            // Poseidon Level 2
+            const poseidonL2 = processedData.filter(s => s.TIER === 'POSEIDON' && s.LEVEL === 2);
+            if (poseidonL2.length > 0) {
+                const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+                gradient.addColorStop(0, COLORS.POSEIDON_BLUE);
+                gradient.addColorStop(1, '#1565C0');
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+                
+                ctx.fillStyle = COLORS.WHITE;
+                ctx.font = 'bold 16px "Barlow Condensed"';
+                ctx.textAlign = 'left';
+                ctx.fillText('🔱 POSEIDON TIER Level 2', 80, y + 18);
+                ctx.font = '11px Inter';
+                ctx.fillText('Recurring 72-hour special liberty', 80, y + 32);
+                
+                y += 50;
+                y = drawTierCards(ctx, poseidonL2, y, canvasWidth, COLORS.POSEIDON_BLUE, rankCounter);
+                rankCounter += poseidonL2.length;
+                y += 15;
+            }
             
-            ctx.fillStyle = COLORS.WHITE;
-            ctx.font = 'bold 20px "Barlow Condensed"';
-            ctx.textAlign = 'left';
-            ctx.fillText('🔱 POSEIDON TIER (≥120% ALNAV)', 80, y + 25);
+            // Poseidon Level 1
+            const poseidonL1 = processedData.filter(s => s.TIER === 'POSEIDON' && s.LEVEL === 1);
+            if (poseidonL1.length > 0) {
+                const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+                gradient.addColorStop(0, COLORS.POSEIDON_BLUE);
+                gradient.addColorStop(1, '#1565C0');
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+                
+                ctx.fillStyle = COLORS.WHITE;
+                ctx.font = 'bold 16px "Barlow Condensed"';
+                ctx.textAlign = 'left';
+                ctx.fillText('🔱 POSEIDON TIER Level 1', 80, y + 18);
+                ctx.font = '11px Inter';
+                ctx.fillText('96-hour special liberty (one time per quarter)', 80, y + 32);
+                
+                y += 50;
+                y = drawTierCards(ctx, poseidonL1, y, canvasWidth, COLORS.POSEIDON_BLUE, rankCounter);
+                y += 15;
+            }
             
-            y += 50;
-            
-            y = drawTierCards(ctx, poseidonStations, y, canvasWidth, COLORS.POSEIDON_BLUE, zeusCount + 1);
-            
-            return y + 15;
+            return y;
         }
         
         function drawTritonTierOps(ctx, startY, canvasWidth) {
             let y = startY;
             
-            const tritonStations = processedData.filter(s => s.TIER === 'TRITON');
-            if (tritonStations.length === 0) return y;
-            
             const aboveCount = processedData.filter(s => s.TIER === 'ZEUS' || s.TIER === 'POSEIDON').length;
+            let rankCounter = aboveCount + 1;
             
-            const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
-            gradient.addColorStop(0, COLORS.TRITON_TEAL);
-            gradient.addColorStop(1, '#00838F');
-            ctx.fillStyle = gradient;
-            roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+            // Triton Level 2
+            const tritonL2 = processedData.filter(s => s.TIER === 'TRITON' && s.LEVEL === 2);
+            if (tritonL2.length > 0) {
+                const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+                gradient.addColorStop(0, COLORS.TRITON_TEAL);
+                gradient.addColorStop(1, '#00838F');
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+                
+                ctx.fillStyle = COLORS.WHITE;
+                ctx.font = 'bold 16px "Barlow Condensed"';
+                ctx.textAlign = 'left';
+                ctx.fillText('🛡️ TRITON TIER Level 2', 80, y + 18);
+                ctx.font = '11px Inter';
+                ctx.fillText('1x 72-hour special liberty', 80, y + 32);
+                
+                y += 50;
+                y = drawTierCards(ctx, tritonL2, y, canvasWidth, COLORS.TRITON_TEAL, rankCounter);
+                rankCounter += tritonL2.length;
+                y += 15;
+            }
             
-            ctx.fillStyle = COLORS.WHITE;
-            ctx.font = 'bold 20px "Barlow Condensed"';
-            ctx.textAlign = 'left';
-            ctx.fillText('🛡️ TRITON TIER (≥100% ALNAV) - Polo Mondays', 80, y + 25);
+            // Triton Level 1
+            const tritonL1 = processedData.filter(s => s.TIER === 'TRITON' && s.LEVEL === 1);
+            if (tritonL1.length > 0) {
+                const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+                gradient.addColorStop(0, COLORS.TRITON_TEAL);
+                gradient.addColorStop(1, '#00838F');
+                ctx.fillStyle = gradient;
+                roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+                
+                ctx.fillStyle = COLORS.WHITE;
+                ctx.font = 'bold 16px "Barlow Condensed"';
+                ctx.textAlign = 'left';
+                ctx.fillText('🛡️ TRITON TIER Level 1', 80, y + 18);
+                ctx.font = '11px Inter';
+                ctx.fillText('Polo Mondays', 80, y + 32);
+                
+                y += 50;
+                y = drawTierCards(ctx, tritonL1, y, canvasWidth, COLORS.TRITON_TEAL, rankCounter);
+                y += 15;
+            }
             
-            y += 50;
-            
-            y = drawTierCards(ctx, tritonStations, y, canvasWidth, COLORS.TRITON_TEAL, aboveCount + 1);
-            
-            return y + 15;
+            return y;
         }
         
         function drawOnTheCuspOps(ctx, startY, canvasWidth) {
@@ -3404,7 +3504,7 @@
                         <span class="progression-status status-${zeusL2Status}">${zeusL2Status.toUpperCase()}</span>
                     </div>
                     <div class="progression-requirements">
-                        ≥140% ALNAV AND 2 of 3 subgoals ≥100%<br>
+                        ≥140% ALNAV AND at/above glideslope for 2 of 3 (AC, NSO, NF)<br>
                         <strong>Reward:</strong> Recurring 72-hour special liberty
                     </div>
                 </div>
