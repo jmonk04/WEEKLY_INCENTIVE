@@ -1,0 +1,3491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTAG Southwest Weekly Incentive Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1700px;
+            width: 100%;
+        }
+        
+        .header-banner {
+            background: linear-gradient(135deg, #003087 0%, #004a9e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .header-banner h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .header-banner p {
+            font-size: 15px;
+            opacity: 0.95;
+        }
+        
+        .report-container {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .instruction {
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        
+        #reportCanvas {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #1a2332;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #003087 0%, #0056b3 100%);
+            padding: 30px;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-station-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .modal-tier-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #0a1929;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #2d3e50;
+        }
+        
+        .stat-label {
+            color: #8b95a5;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Barlow Condensed', sans-serif;
+        }
+        
+        .stat-subtext {
+            color: #8b95a5;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        .section-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2d3e50;
+        }
+        
+        .mission-area {
+            background: #0a1929;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+        }
+        
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .mission-name {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .mission-percent {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: 'Barlow Condensed', sans-serif;
+        }
+        
+        .mission-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .mission-detail-item {
+            color: #8b95a5;
+            font-size: 13px;
+        }
+        
+        .mission-detail-value {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .projection-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .projection-card {
+            background: #0a1929;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #2d3e50;
+        }
+        
+        .projection-day {
+            color: #8b95a5;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .projection-target {
+            color: #ffd600;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 8px 0;
+            font-family: 'Barlow Condensed', sans-serif;
+        }
+        
+        .projection-needed {
+            color: white;
+            font-size: 13px;
+        }
+        
+        .tier-progression {
+            background: #0a1929;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        
+        .progression-item {
+            padding: 15px;
+            border-left: 4px solid;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .progression-tier {
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .progression-requirements {
+            color: #8b95a5;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .progression-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-current {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-achievable {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .status-locked {
+            background: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-banner">
+            <h1>⚓ NTAG Southwest Weekly Incentive Report</h1>
+            <p>Click any station card for detailed breakdown</p>
+        </div>
+        
+        <div class="report-container">
+            <p class="instruction">💡 <strong>Tip:</strong> Click on any station card to see mission areas, projections, and tier progression path</p>
+            <canvas id="reportCanvas"></canvas>
+        </div>
+    </div>
+    
+    <!-- Modal for station details -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" id="modalClose">×</button>
+                <div class="modal-station-name" id="modalStationName"></div>
+                <div id="modalBadges"></div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - UPDATE THIS SECTION WEEKLY
+        // ============================================
+        
+        const REPORT_CONFIG = {
+            currentProductionDay: 33,
+            lastProductionDay: 28,
+            nextProductionDay: 38,
+            reportDate: '21NOV25'
+        };
+        
+        // PASTE YOUR PROCESSED DATA HERE (from generator tool)
+        const REPORT_DATA = [[
+  {
+    "DIVISION": "DIV 7",
+    "SIZE": "MEDIUM",
+    "STATIONS": "LV",
+    "ALNAV GOAL": 85,
+    "ALNAV GROSS": 29,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 28,
+    "ALNAV %": 0.32941176470588235,
+    "ALNAV GLIDESLOPE %": 2.325846702317291,
+    "AC GOAL": 83,
+    "AC GROSS": 27,
+    "AC LOSS": 1,
+    "AC ATTN": 26,
+    "AC %": 0.3132530120481928,
+    "AC GLIDESLOPE %": 2.211756115370574,
+    "RC GOAL": 2,
+    "RC GROSS": 2,
+    "RC LOSS": 0,
+    "RC ATTN": 2,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 2,
+    "NAT LOSS": 0,
+    "NAT ATTN": 2,
+    "NAT %": 2,
+    "NAT GLIDESLOPE %": 14.121212121212123,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 4,
+    "NSO GROSS": 3,
+    "NSO LOSS": 0,
+    "NSO ATTN": 3,
+    "NSO %": 0.75,
+    "NSO GLIDESLOPE %": 5.295454545454547,
+    "NNS GOAL": 4,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.25,
+    "NNS GLIDESLOPE %": 1.7651515151515154,
+    "AC TTCU GOAL": 53,
+    "AC TTCU GROSS": 17,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 16,
+    "AC TTCU %": 0.3018867924528302,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 6,
+    "PRI RATE LOSS": 2,
+    "PRI RATE ATTN": 4,
+    "PRI RATE %": 0.5714285714285714,
+    "TIER": "ZEUS",
+    "LEVEL": 2,
+    "REWARD": "Recurring 72-hour special liberty",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.21227965933848258
+  },
+  {
+    "DIVISION": "DIV 1 ",
+    "SIZE": "MEGA",
+    "STATIONS": "CHULA VISTA",
+    "ALNAV GOAL": 144,
+    "ALNAV GROSS": 34,
+    "ALNAV LOSS": 0,
+    "ALNAV ATTN": 34,
+    "ALNAV %": 0.2361111111111111,
+    "ALNAV GLIDESLOPE %": 1.6670875420875424,
+    "AC GOAL": 140,
+    "AC GROSS": 34,
+    "AC LOSS": 0,
+    "AC ATTN": 34,
+    "AC %": 0.24285714285714285,
+    "AC GLIDESLOPE %": 1.714718614718615,
+    "RC GOAL": 4,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 2,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 2,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 11,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 7,
+    "NSO GROSS": 3,
+    "NSO LOSS": 0,
+    "NSO ATTN": 3,
+    "NSO %": 0.42857142857142855,
+    "NSO GLIDESLOPE %": 3.0259740259740266,
+    "NNS GOAL": 9,
+    "NNS GROSS": 2,
+    "NNS LOSS": 1,
+    "NNS ATTN": 1,
+    "NNS %": 0.1111111111111111,
+    "NNS GLIDESLOPE %": 0.7845117845117846,
+    "AC TTCU GOAL": 88,
+    "AC TTCU GROSS": 30,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 30,
+    "AC TTCU %": 0.3409090909090909,
+    "PRI RATE GOAL": 16,
+    "PRI RATE GROSS": 6,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 5,
+    "PRI RATE %": 0.3125,
+    "TIER": "ZEUS",
+    "LEVEL": 2,
+    "REWARD": "Recurring 72-hour special liberty",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": 0.049031986531986815
+  },
+  {
+    "DIVISION": "DIV 2",
+    "SIZE": "SMALL",
+    "STATIONS": "MIRA MESA",
+    "ALNAV GOAL": 60,
+    "ALNAV GROSS": 14,
+    "ALNAV LOSS": 0,
+    "ALNAV ATTN": 14,
+    "ALNAV %": 0.23333333333333334,
+    "ALNAV GLIDESLOPE %": 1.6474747474747478,
+    "AC GOAL": 58,
+    "AC GROSS": 14,
+    "AC LOSS": 0,
+    "AC ATTN": 14,
+    "AC %": 0.2413793103448276,
+    "AC GLIDESLOPE %": 1.7042842215256009,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 0,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 1,
+    "TAR GOAL": 2,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 4,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.25,
+    "NSO GLIDESLOPE %": 1.7651515151515154,
+    "NNS GOAL": 3,
+    "NNS GROSS": 0,
+    "NNS LOSS": 0,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 40,
+    "AC TTCU GROSS": 10,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 10,
+    "AC TTCU %": 0.25,
+    "PRI RATE GOAL": 6,
+    "PRI RATE GROSS": 1,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 1,
+    "PRI RATE %": 0.16666666666666666,
+    "TIER": "ZEUS",
+    "LEVEL": 2,
+    "REWARD": "Recurring 72-hour special liberty",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.3661054994388322
+  },
+  {
+    "DIVISION": "DIV 6",
+    "SIZE": "MEGA",
+    "STATIONS": "VICTORVILLE",
+    "ALNAV GOAL": 122,
+    "ALNAV GROSS": 30,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 27,
+    "ALNAV %": 0.22131147540983606,
+    "ALNAV GLIDESLOPE %": 1.5625931445603578,
+    "AC GOAL": 120,
+    "AC GROSS": 29,
+    "AC LOSS": 3,
+    "AC ATTN": 26,
+    "AC %": 0.21666666666666667,
+    "AC GLIDESLOPE %": 1.5297979797979802,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 0.5,
+    "RC GLIDESLOPE %": 3.5303030303030307,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 1,
+    "TAR LOSS": 0,
+    "TAR ATTN": 1,
+    "TAR %": 1,
+    "TAR GLIDESLOPE %": 7.060606060606061,
+    "NUKE GOAL": 8,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.125,
+    "NUKE GLIDESLOPE %": 0.8825757575757577,
+    "NSO GOAL": 5,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.2,
+    "NSO GLIDESLOPE %": 1.4121212121212123,
+    "NNS GOAL": 6,
+    "NNS GROSS": 2,
+    "NNS LOSS": 1,
+    "NNS ATTN": 1,
+    "NNS %": 0.16666666666666666,
+    "NNS GLIDESLOPE %": 1.176767676767677,
+    "AC TTCU GOAL": 57,
+    "AC TTCU GROSS": 19,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 18,
+    "AC TTCU %": 0.3157894736842105,
+    "PRI RATE GOAL": 10,
+    "PRI RATE GROSS": 6,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 5,
+    "PRI RATE %": 0.5,
+    "TIER": "ZEUS",
+    "LEVEL": 2,
+    "REWARD": "Recurring 72-hour special liberty",
+    "NF GLIDESLOPE %": 0.8825757575757577,
+    "ALNAV_CHANGE_PCT": -0.3472429210134125
+  },
+  {
+    "DIVISION": "DIV 6",
+    "SIZE": "LARGE",
+    "STATIONS": "SAN BERNADINO",
+    "ALNAV GOAL": 96,
+    "ALNAV GROSS": 22,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 21,
+    "ALNAV %": 0.21875,
+    "ALNAV GLIDESLOPE %": 1.5445075757575761,
+    "AC GOAL": 94,
+    "AC GROSS": 21,
+    "AC LOSS": 0,
+    "AC ATTN": 21,
+    "AC %": 0.22340425531914893,
+    "AC GLIDESLOPE %": 1.5773694390715671,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 1,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "NAT GLIDESLOPE %": 7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 1,
+    "TAR ATTN": -1,
+    "TAR %": -1,
+    "TAR GLIDESLOPE %": -7.060606060606061,
+    "NUKE GOAL": 7,
+    "NUKE GROSS": 2,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 2,
+    "NUKE %": 0.2857142857142857,
+    "NUKE GLIDESLOPE %": 2.0173160173160176,
+    "NSO GOAL": 5,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.2,
+    "NSO GLIDESLOPE %": 1.4121212121212123,
+    "NNS GOAL": 6,
+    "NNS GROSS": 4,
+    "NNS LOSS": 0,
+    "NNS ATTN": 4,
+    "NNS %": 0.6666666666666666,
+    "NNS GLIDESLOPE %": 4.707070707070708,
+    "AC TTCU GOAL": 55,
+    "AC TTCU GROSS": 11,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 10,
+    "AC TTCU %": 0.18181818181818182,
+    "PRI RATE GOAL": 9,
+    "PRI RATE GROSS": 5,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 4,
+    "PRI RATE %": 0.4444444444444444,
+    "TIER": "ZEUS",
+    "LEVEL": 3,
+    "REWARD": "Recurring 96-hour special liberty",
+    "NF GLIDESLOPE %": 2.0173160173160176,
+    "ALNAV_CHANGE_PCT": -0.16343995510662124
+  },
+  {
+    "DIVISION": "DIV 2",
+    "SIZE": "MEDIUM",
+    "STATIONS": "ESCONDIDO",
+    "ALNAV GOAL": 77,
+    "ALNAV GROSS": 17,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 16,
+    "ALNAV %": 0.2077922077922078,
+    "ALNAV GLIDESLOPE %": 1.4671389216843764,
+    "AC GOAL": 76,
+    "AC GROSS": 16,
+    "AC LOSS": 1,
+    "AC ATTN": 15,
+    "AC %": 0.19736842105263158,
+    "AC GLIDESLOPE %": 1.3935406698564596,
+    "RC GOAL": 1,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "NAT GLIDESLOPE %": 7.060606060606061,
+    "TAR GOAL": 0,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 1,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 1,
+    "NSO ATTN": -1,
+    "NSO %": -0.25,
+    "NSO GLIDESLOPE %": -1.7651515151515154,
+    "NNS GOAL": 5,
+    "NNS GROSS": 3,
+    "NNS LOSS": 0,
+    "NNS ATTN": 3,
+    "NNS %": 0.6,
+    "NNS GLIDESLOPE %": 4.236363636363637,
+    "AC TTCU GOAL": 44,
+    "AC TTCU GROSS": 7,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 6,
+    "AC TTCU %": 0.13636363636363635,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 5,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 5,
+    "PRI RATE %": 0.625,
+    "TIER": "ZEUS",
+    "LEVEL": 1,
+    "REWARD": "96-hour special liberty (one time per quarter)",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.32603087148541654
+  },
+  {
+    "DIVISION": "DIV 4",
+    "SIZE": "SMALL",
+    "STATIONS": "HEMET",
+    "ALNAV GOAL": 74,
+    "ALNAV GROSS": 18,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 15,
+    "ALNAV %": 0.20270270270270271,
+    "ALNAV GLIDESLOPE %": 1.4312039312039313,
+    "AC GOAL": 72,
+    "AC GROSS": 17,
+    "AC LOSS": 2,
+    "AC ATTN": 15,
+    "AC %": 0.20833333333333334,
+    "AC GLIDESLOPE %": 1.4709595959595962,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 1,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 1,
+    "NAT ATTN": -1,
+    "NAT %": -1,
+    "NAT GLIDESLOPE %": -7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 1,
+    "TAR LOSS": 0,
+    "TAR ATTN": 1,
+    "TAR %": 1,
+    "TAR GLIDESLOPE %": 7.060606060606061,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 3,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 5,
+    "NNS GROSS": 1,
+    "NNS LOSS": 2,
+    "NNS ATTN": -1,
+    "NNS %": -0.2,
+    "NNS GLIDESLOPE %": -1.4121212121212123,
+    "AC TTCU GOAL": 41,
+    "AC TTCU GROSS": 9,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 9,
+    "AC TTCU %": 0.21951219512195122,
+    "PRI RATE GOAL": 6,
+    "PRI RATE GROSS": 3,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.5,
+    "TIER": "ZEUS",
+    "LEVEL": 1,
+    "REWARD": "96-hour special liberty (one time per quarter)",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.31804531804531777
+  },
+  {
+    "DIVISION": "DIV 5",
+    "SIZE": "LARGE",
+    "STATIONS": "RIVERSIDE",
+    "ALNAV GOAL": 101,
+    "ALNAV GROSS": 22,
+    "ALNAV LOSS": 2,
+    "ALNAV ATTN": 20,
+    "ALNAV %": 0.19801980198019803,
+    "ALNAV GLIDESLOPE %": 1.3981398139813983,
+    "AC GOAL": 99,
+    "AC GROSS": 21,
+    "AC LOSS": 1,
+    "AC ATTN": 20,
+    "AC %": 0.20202020202020202,
+    "AC GLIDESLOPE %": 1.4263850627486994,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 1,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 1,
+    "NAT ATTN": -1,
+    "NAT %": -1,
+    "NAT GLIDESLOPE %": -7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 1,
+    "TAR LOSS": 0,
+    "TAR ATTN": 1,
+    "TAR %": 1,
+    "TAR GLIDESLOPE %": 7.060606060606061,
+    "NUKE GOAL": 7,
+    "NUKE GROSS": 2,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 2,
+    "NUKE %": 0.2857142857142857,
+    "NUKE GLIDESLOPE %": 2.0173160173160176,
+    "NSO GOAL": 5,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 6,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.16666666666666666,
+    "NNS GLIDESLOPE %": 1.176767676767677,
+    "AC TTCU GOAL": 52,
+    "AC TTCU GROSS": 12,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 11,
+    "AC TTCU %": 0.21153846153846154,
+    "PRI RATE GOAL": 9,
+    "PRI RATE GROSS": 5,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 4,
+    "PRI RATE %": 0.4444444444444444,
+    "TIER": "POSEIDON",
+    "LEVEL": 1,
+    "REWARD": "96-hour special liberty (one time per quarter)",
+    "NF GLIDESLOPE %": 2.0173160173160176,
+    "ALNAV_CHANGE_PCT": 0.031069773644031295
+  },
+  {
+    "DIVISION": "DIV 2",
+    "SIZE": "LARGE",
+    "STATIONS": "CLAIREMONT",
+    "ALNAV GOAL": 94,
+    "ALNAV GROSS": 21,
+    "ALNAV LOSS": 4,
+    "ALNAV ATTN": 17,
+    "ALNAV %": 0.18085106382978725,
+    "ALNAV GLIDESLOPE %": 1.2769181173436495,
+    "AC GOAL": 92,
+    "AC GROSS": 19,
+    "AC LOSS": 4,
+    "AC ATTN": 15,
+    "AC %": 0.16304347826086957,
+    "AC GLIDESLOPE %": 1.1511857707509883,
+    "RC GOAL": 2,
+    "RC GROSS": 2,
+    "RC LOSS": 0,
+    "RC ATTN": 2,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "NAT GLIDESLOPE %": 7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 1,
+    "TAR LOSS": 0,
+    "TAR ATTN": 1,
+    "TAR %": 1,
+    "TAR GLIDESLOPE %": 7.060606060606061,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.2,
+    "NUKE GLIDESLOPE %": 1.4121212121212123,
+    "NSO GOAL": 6,
+    "NSO GROSS": 2,
+    "NSO LOSS": 1,
+    "NSO ATTN": 1,
+    "NSO %": 0.16666666666666666,
+    "NSO GLIDESLOPE %": 1.176767676767677,
+    "NNS GOAL": 5,
+    "NNS GROSS": 0,
+    "NNS LOSS": 0,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 55,
+    "AC TTCU GROSS": 12,
+    "AC TTCU LOSS": 2,
+    "AC TTCU ATTN": 10,
+    "AC TTCU %": 0.18181818181818182,
+    "PRI RATE GOAL": 10,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.3,
+    "TIER": "POSEIDON",
+    "LEVEL": 1,
+    "REWARD": "96-hour special liberty (one time per quarter)",
+    "NF GLIDESLOPE %": 1.4121212121212123,
+    "ALNAV_CHANGE_PCT": -0.19195501110394697
+  },
+  {
+    "DIVISION": "DIV 4",
+    "SIZE": "MEGA",
+    "STATIONS": "TEMECULA",
+    "ALNAV GOAL": 168,
+    "ALNAV GROSS": 33,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 30,
+    "ALNAV %": 0.17857142857142858,
+    "ALNAV GLIDESLOPE %": 1.260822510822511,
+    "AC GOAL": 166,
+    "AC GROSS": 32,
+    "AC LOSS": 3,
+    "AC ATTN": 29,
+    "AC %": 0.1746987951807229,
+    "AC GLIDESLOPE %": 1.2334793720335893,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 0.5,
+    "RC GLIDESLOPE %": 3.5303030303030307,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 1,
+    "TAR LOSS": 0,
+    "TAR ATTN": 1,
+    "TAR %": 1,
+    "TAR GLIDESLOPE %": 7.060606060606061,
+    "NUKE GOAL": 15,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.06666666666666667,
+    "NUKE GLIDESLOPE %": 0.4707070707070708,
+    "NSO GOAL": 11,
+    "NSO GROSS": 4,
+    "NSO LOSS": 1,
+    "NSO ATTN": 3,
+    "NSO %": 0.2727272727272727,
+    "NSO GLIDESLOPE %": 1.925619834710744,
+    "NNS GOAL": 9,
+    "NNS GROSS": 2,
+    "NNS LOSS": 1,
+    "NNS ATTN": 1,
+    "NNS %": 0.1111111111111111,
+    "NNS GLIDESLOPE %": 0.7845117845117846,
+    "AC TTCU GOAL": 107,
+    "AC TTCU GROSS": 19,
+    "AC TTCU LOSS": 3,
+    "AC TTCU ATTN": 16,
+    "AC TTCU %": 0.14953271028037382,
+    "PRI RATE GOAL": 20,
+    "PRI RATE GROSS": 6,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 5,
+    "PRI RATE %": 0.25,
+    "TIER": "POSEIDON",
+    "LEVEL": 1,
+    "REWARD": "96-hour special liberty (one time per quarter)",
+    "NF GLIDESLOPE %": 0.4707070707070708,
+    "ALNAV_CHANGE_PCT": 0.028018278018278275
+  },
+  {
+    "DIVISION": "DIV 4",
+    "SIZE": "SMALL",
+    "STATIONS": "PALM DESERT",
+    "ALNAV GOAL": 80,
+    "ALNAV GROSS": 14,
+    "ALNAV LOSS": 0,
+    "ALNAV ATTN": 14,
+    "ALNAV %": 0.175,
+    "ALNAV GLIDESLOPE %": 1.2356060606060608,
+    "AC GOAL": 78,
+    "AC GROSS": 14,
+    "AC LOSS": 0,
+    "AC ATTN": 14,
+    "AC %": 0.1794871794871795,
+    "AC GLIDESLOPE %": 1.2672882672882677,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 4,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 4,
+    "NUKE %": 0.8,
+    "NUKE GLIDESLOPE %": 5.648484848484849,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 6,
+    "NNS GROSS": 0,
+    "NNS LOSS": 1,
+    "NNS ATTN": -1,
+    "NNS %": -0.16666666666666666,
+    "NNS GLIDESLOPE %": -1.176767676767677,
+    "AC TTCU GOAL": 41,
+    "AC TTCU GROSS": 9,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 9,
+    "AC TTCU %": 0.21951219512195122,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 3,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.42857142857142855,
+    "TIER": "POSEIDON",
+    "LEVEL": 1,
+    "REWARD": "96-hour special liberty (one time per quarter)",
+    "NF GLIDESLOPE %": 5.648484848484849,
+    "ALNAV_CHANGE_PCT": 0.049031986531986815
+  },
+  {
+    "DIVISION": "DIV 1 ",
+    "SIZE": "MEDIUM",
+    "STATIONS": "COLLEGE GROVE",
+    "ALNAV GOAL": 76,
+    "ALNAV GROSS": 14,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 13,
+    "ALNAV %": 0.17105263157894737,
+    "ALNAV GLIDESLOPE %": 1.2077352472089316,
+    "AC GOAL": 74,
+    "AC GROSS": 14,
+    "AC LOSS": 1,
+    "AC ATTN": 13,
+    "AC %": 0.17567567567567569,
+    "AC GLIDESLOPE %": 1.2403767403767405,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 11,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.09090909090909091,
+    "NUKE GLIDESLOPE %": 0.6418732782369148,
+    "NSO GOAL": 5,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.2,
+    "NSO GLIDESLOPE %": 1.4121212121212123,
+    "NNS GOAL": 9,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.1111111111111111,
+    "NNS GLIDESLOPE %": 0.7845117845117846,
+    "AC TTCU GOAL": 47,
+    "AC TTCU GROSS": 9,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 8,
+    "AC TTCU %": 0.1702127659574468,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 2,
+    "PRI RATE ATTN": 2,
+    "PRI RATE %": 0.25,
+    "TIER": "POSEIDON",
+    "LEVEL": 1,
+    "REWARD": "96-hour special liberty (one time per quarter)",
+    "NF GLIDESLOPE %": 0.6418732782369148,
+    "ALNAV_CHANGE_PCT": -0.04129009392167249
+  },
+  {
+    "DIVISION": "DIV 4",
+    "SIZE": "MEDIUM",
+    "STATIONS": "SUN CITY",
+    "ALNAV GOAL": 77,
+    "ALNAV GROSS": 17,
+    "ALNAV LOSS": 4,
+    "ALNAV ATTN": 13,
+    "ALNAV %": 0.16883116883116883,
+    "ALNAV GLIDESLOPE %": 1.192050373868556,
+    "AC GOAL": 75,
+    "AC GROSS": 17,
+    "AC LOSS": 2,
+    "AC ATTN": 15,
+    "AC %": 0.2,
+    "AC GLIDESLOPE %": 1.4121212121212123,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 2,
+    "RC ATTN": -2,
+    "RC %": -1,
+    "RC GLIDESLOPE %": -7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 2,
+    "TAR ATTN": -2,
+    "TAR %": -2,
+    "TAR GLIDESLOPE %": -14.121212121212123,
+    "NUKE GOAL": 6,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.16666666666666666,
+    "NUKE GLIDESLOPE %": 1.176767676767677,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 6,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.16666666666666666,
+    "NNS GLIDESLOPE %": 1.176767676767677,
+    "AC TTCU GOAL": 49,
+    "AC TTCU GROSS": 10,
+    "AC TTCU LOSS": 2,
+    "AC TTCU ATTN": 8,
+    "AC TTCU %": 0.16326530612244897,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 5,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 5,
+    "PRI RATE %": 0.7142857142857143,
+    "TIER": "TRITON",
+    "LEVEL": 1,
+    "REWARD": "Polo Mondays",
+    "NF GLIDESLOPE %": 1.176767676767677,
+    "ALNAV_CHANGE_PCT": -0.15282697100878861
+  },
+  {
+    "DIVISION": "DIV 3",
+    "SIZE": "MEDIUM",
+    "STATIONS": "GARDEN GROVE",
+    "ALNAV GOAL": 57,
+    "ALNAV GROSS": 10,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 9,
+    "ALNAV %": 0.15789473684210525,
+    "ALNAV GLIDESLOPE %": 1.1148325358851676,
+    "AC GOAL": 55,
+    "AC GROSS": 10,
+    "AC LOSS": 1,
+    "AC ATTN": 9,
+    "AC %": 0.16363636363636364,
+    "AC GLIDESLOPE %": 1.1553719008264465,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 3,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.3333333333333333,
+    "NUKE GLIDESLOPE %": 2.353535353535354,
+    "NSO GOAL": 1,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 4,
+    "NNS GROSS": 0,
+    "NNS LOSS": 0,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 38,
+    "AC TTCU GROSS": 8,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 7,
+    "AC TTCU %": 0.18421052631578946,
+    "PRI RATE GOAL": 6,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.5,
+    "TIER": "TRITON",
+    "LEVEL": 1,
+    "REWARD": "Polo Mondays",
+    "NF GLIDESLOPE %": 2.353535353535354,
+    "ALNAV_CHANGE_PCT": 0.05505345856223087
+  },
+  {
+    "DIVISION": "DIV 2",
+    "SIZE": "MEGA",
+    "STATIONS": "OCEANSIDE",
+    "ALNAV GOAL": 131,
+    "ALNAV GROSS": 22,
+    "ALNAV LOSS": 2,
+    "ALNAV ATTN": 20,
+    "ALNAV %": 0.15267175572519084,
+    "ALNAV GLIDESLOPE %": 1.0779551237566507,
+    "AC GOAL": 129,
+    "AC GROSS": 21,
+    "AC LOSS": 1,
+    "AC ATTN": 20,
+    "AC %": 0.15503875968992248,
+    "AC GLIDESLOPE %": 1.0946676062955136,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 1,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "NAT GLIDESLOPE %": 7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 1,
+    "TAR ATTN": -1,
+    "TAR %": -1,
+    "TAR GLIDESLOPE %": -7.060606060606061,
+    "NUKE GOAL": 10,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.1,
+    "NUKE GLIDESLOPE %": 0.7060606060606062,
+    "NSO GOAL": 5,
+    "NSO GROSS": 2,
+    "NSO LOSS": 0,
+    "NSO ATTN": 2,
+    "NSO %": 0.4,
+    "NSO GLIDESLOPE %": 2.8242424242424247,
+    "NNS GOAL": 11,
+    "NNS GROSS": 1,
+    "NNS LOSS": 1,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 67,
+    "AC TTCU GROSS": 19,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 18,
+    "AC TTCU %": 0.26865671641791045,
+    "PRI RATE GOAL": 10,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.3,
+    "TIER": "TRITON",
+    "LEVEL": 1,
+    "REWARD": "Polo Mondays",
+    "NF GLIDESLOPE %": 0.7060606060606062,
+    "ALNAV_CHANGE_PCT": -0.10779551237566487
+  },
+  {
+    "DIVISION": "DIV 7",
+    "SIZE": "LARGE",
+    "STATIONS": "HENDERSON",
+    "ALNAV GOAL": 106,
+    "ALNAV GROSS": 17,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 16,
+    "ALNAV %": 0.1509433962264151,
+    "ALNAV GLIDESLOPE %": 1.0657518582046885,
+    "AC GOAL": 104,
+    "AC GROSS": 15,
+    "AC LOSS": 1,
+    "AC ATTN": 14,
+    "AC %": 0.1346153846153846,
+    "AC GLIDESLOPE %": 0.9504662004662007,
+    "RC GOAL": 2,
+    "RC GROSS": 2,
+    "RC LOSS": 0,
+    "RC ATTN": 2,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 2,
+    "NAT LOSS": 0,
+    "NAT ATTN": 2,
+    "NAT %": 2,
+    "NAT GLIDESLOPE %": 14.121212121212123,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 8,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 6,
+    "NSO GROSS": 0,
+    "NSO LOSS": 2,
+    "NSO ATTN": -2,
+    "NSO %": -0.3333333333333333,
+    "NSO GLIDESLOPE %": -2.353535353535354,
+    "NNS GOAL": 8,
+    "NNS GROSS": 1,
+    "NNS LOSS": 1,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 56,
+    "AC TTCU GROSS": 8,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 7,
+    "AC TTCU %": 0.125,
+    "PRI RATE GOAL": 12,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 4,
+    "PRI RATE %": 0.3333333333333333,
+    "TIER": "TRITON",
+    "LEVEL": 1,
+    "REWARD": "Polo Mondays",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": 0.007401054570866039
+  },
+  {
+    "DIVISION": "DIV 2",
+    "SIZE": "SMALL",
+    "STATIONS": "POWAY",
+    "ALNAV GOAL": 61,
+    "ALNAV GROSS": 10,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 9,
+    "ALNAV %": 0.14754098360655737,
+    "ALNAV GLIDESLOPE %": 1.0417287630402385,
+    "AC GOAL": 60,
+    "AC GROSS": 10,
+    "AC LOSS": 1,
+    "AC ATTN": 9,
+    "AC %": 0.15,
+    "AC GLIDESLOPE %": 1.0590909090909093,
+    "RC GOAL": 1,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 0,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 1,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 3,
+    "NNS GROSS": 3,
+    "NNS LOSS": 1,
+    "NNS ATTN": 2,
+    "NNS %": 0.6666666666666666,
+    "NNS GLIDESLOPE %": 4.707070707070708,
+    "AC TTCU GOAL": 37,
+    "AC TTCU GROSS": 6,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 5,
+    "AC TTCU %": 0.13513513513513514,
+    "PRI RATE GOAL": 6,
+    "PRI RATE GROSS": 1,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 0,
+    "PRI RATE %": 0,
+    "TIER": "TRITON",
+    "LEVEL": 1,
+    "REWARD": "Polo Mondays",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": 0.0514433957056909
+  },
+  {
+    "DIVISION": "DIV 7",
+    "SIZE": "LARGE",
+    "STATIONS": "SPRING VALLEY",
+    "ALNAV GOAL": 89,
+    "ALNAV GROSS": 15,
+    "ALNAV LOSS": 2,
+    "ALNAV ATTN": 13,
+    "ALNAV %": 0.14606741573033707,
+    "ALNAV GLIDESLOPE %": 1.0313244807626831,
+    "AC GOAL": 87,
+    "AC GROSS": 14,
+    "AC LOSS": 2,
+    "AC ATTN": 12,
+    "AC %": 0.13793103448275862,
+    "AC GLIDESLOPE %": 0.9738766980146293,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 0.5,
+    "RC GLIDESLOPE %": 3.5303030303030307,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "NAT GLIDESLOPE %": 7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 2,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 2,
+    "NUKE %": 0.4,
+    "NUKE GLIDESLOPE %": 2.8242424242424247,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 5,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.2,
+    "NNS GLIDESLOPE %": 1.4121212121212123,
+    "AC TTCU GOAL": 53,
+    "AC TTCU GROSS": 11,
+    "AC TTCU LOSS": 2,
+    "AC TTCU ATTN": 9,
+    "AC TTCU %": 0.16981132075471697,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 2,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 2,
+    "PRI RATE %": 0.2857142857142857,
+    "TIER": "TRITON",
+    "LEVEL": 1,
+    "REWARD": "Polo Mondays",
+    "NF GLIDESLOPE %": 2.8242424242424247,
+    "ALNAV_CHANGE_PCT": 0.15866530473272056
+  },
+  {
+    "DIVISION": "DIV 5",
+    "SIZE": "MEDIUM",
+    "STATIONS": "CORONA",
+    "ALNAV GOAL": 83,
+    "ALNAV GROSS": 13,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 12,
+    "ALNAV %": 0.14457831325301204,
+    "ALNAV GLIDESLOPE %": 1.0208105147864186,
+    "AC GOAL": 81,
+    "AC GROSS": 13,
+    "AC LOSS": 1,
+    "AC ATTN": 12,
+    "AC %": 0.14814814814814814,
+    "AC GLIDESLOPE %": 1.0460157126823795,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 7,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 1,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 4,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.25,
+    "NSO GLIDESLOPE %": 1.7651515151515154,
+    "NNS GOAL": 5,
+    "NNS GROSS": 0,
+    "NNS LOSS": 0,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 51,
+    "AC TTCU GROSS": 7,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 6,
+    "AC TTCU %": 0.11764705882352941,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 1,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 1,
+    "PRI RATE %": 0.125,
+    "TIER": "TRITON",
+    "LEVEL": 1,
+    "REWARD": "Polo Mondays",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.01890389842197049
+  },
+  {
+    "DIVISION": "DIV 3",
+    "SIZE": "LARGE",
+    "STATIONS": "SANTA ANA",
+    "ALNAV GOAL": 71,
+    "ALNAV GROSS": 10,
+    "ALNAV LOSS": 0,
+    "ALNAV ATTN": 10,
+    "ALNAV %": 0.14084507042253522,
+    "ALNAV GLIDESLOPE %": 0.9944515578318397,
+    "AC GOAL": 70,
+    "AC GROSS": 9,
+    "AC LOSS": 0,
+    "AC ATTN": 9,
+    "AC %": 0.12857142857142856,
+    "AC GLIDESLOPE %": 0.907792207792208,
+    "RC GOAL": 1,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "NAT GLIDESLOPE %": 7.060606060606061,
+    "TAR GOAL": 0,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 1,
+    "NUKE GOAL": 4,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 3,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.3333333333333333,
+    "NSO GLIDESLOPE %": 2.353535353535354,
+    "NNS GOAL": 4,
+    "NNS GROSS": 0,
+    "NNS LOSS": 0,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 41,
+    "AC TTCU GROSS": 4,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 4,
+    "AC TTCU %": 0.0975609756097561,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 2,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 1,
+    "PRI RATE %": 0.14285714285714285,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.2209892350737418
+  },
+  {
+    "DIVISION": "DIV 1",
+    "SIZE": "LARGE",
+    "STATIONS": "YUMA",
+    "ALNAV GOAL": 57,
+    "ALNAV GROSS": 8,
+    "ALNAV LOSS": 0,
+    "ALNAV ATTN": 8,
+    "ALNAV %": 0.14035087719298245,
+    "ALNAV GLIDESLOPE %": 0.9909622541201489,
+    "AC GOAL": 57,
+    "AC GROSS": 8,
+    "AC LOSS": 0,
+    "AC ATTN": 8,
+    "AC %": 0.14035087719298245,
+    "AC GLIDESLOPE %": 0.9909622541201489,
+    "RC GOAL": 0,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 1,
+    "NAT GOAL": 0,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 1,
+    "TAR GOAL": 0,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 1,
+    "NUKE GOAL": 6,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.16666666666666666,
+    "NUKE GLIDESLOPE %": 1.176767676767677,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 6,
+    "NNS GROSS": 1,
+    "NNS LOSS": 1,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 36,
+    "AC TTCU GROSS": 4,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 4,
+    "AC TTCU %": 0.1111111111111111,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 1,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 1,
+    "PRI RATE %": 0.125,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 1.176767676767677,
+    "ALNAV_CHANGE_PCT": 0.08258018784334598
+  },
+  {
+    "DIVISION": "DIV 5",
+    "SIZE": "LARGE",
+    "STATIONS": "UPLAND",
+    "ALNAV GOAL": 95,
+    "ALNAV GROSS": 16,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 13,
+    "ALNAV %": 0.1368421052631579,
+    "ALNAV GLIDESLOPE %": 0.9661881977671454,
+    "AC GOAL": 93,
+    "AC GROSS": 16,
+    "AC LOSS": 2,
+    "AC ATTN": 14,
+    "AC %": 0.15053763440860216,
+    "AC GLIDESLOPE %": 1.062886933854676,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 1,
+    "RC ATTN": -1,
+    "RC %": -0.5,
+    "RC GLIDESLOPE %": -3.5303030303030307,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 1,
+    "NAT ATTN": -1,
+    "NAT %": -1,
+    "NAT GLIDESLOPE %": -7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 6,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 5,
+    "NSO GROSS": 1,
+    "NSO LOSS": 1,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 6,
+    "NNS GROSS": 2,
+    "NNS LOSS": 0,
+    "NNS ATTN": 2,
+    "NNS %": 0.3333333333333333,
+    "NNS GLIDESLOPE %": 2.353535353535354,
+    "AC TTCU GOAL": 52,
+    "AC TTCU GROSS": 14,
+    "AC TTCU LOSS": 2,
+    "AC TTCU ATTN": 12,
+    "AC TTCU %": 0.23076923076923078,
+    "PRI RATE GOAL": 9,
+    "PRI RATE GROSS": 0,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 0,
+    "PRI RATE %": 0,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.3055466950203789
+  },
+  {
+    "DIVISION": "DIV 1",
+    "SIZE": "LARGE",
+    "STATIONS": "EL CAJON",
+    "ALNAV GOAL": 109,
+    "ALNAV GROSS": 16,
+    "ALNAV LOSS": 2,
+    "ALNAV ATTN": 14,
+    "ALNAV %": 0.12844036697247707,
+    "ALNAV GLIDESLOPE %": 0.9068668334723382,
+    "AC GOAL": 107,
+    "AC GROSS": 16,
+    "AC LOSS": 2,
+    "AC ATTN": 14,
+    "AC %": 0.1308411214953271,
+    "AC GLIDESLOPE %": 0.9238176154064006,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 8,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 6,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.16666666666666666,
+    "NSO GLIDESLOPE %": 1.176767676767677,
+    "NNS GOAL": 7,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.14285714285714285,
+    "NNS GLIDESLOPE %": 1.0086580086580088,
+    "AC TTCU GOAL": 68,
+    "AC TTCU GROSS": 13,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 13,
+    "AC TTCU %": 0.19117647058823528,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 2,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 2,
+    "PRI RATE %": 0.25,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.3598677910604513
+  },
+  {
+    "DIVISION": "DIV 7",
+    "SIZE": "MEGA",
+    "STATIONS": "NORTHERN LIGHTS",
+    "ALNAV GOAL": 129,
+    "ALNAV GROSS": 19,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 16,
+    "ALNAV %": 0.12403100775193798,
+    "ALNAV GLIDESLOPE %": 0.8757340850364108,
+    "AC GOAL": 127,
+    "AC GROSS": 17,
+    "AC LOSS": 3,
+    "AC ATTN": 14,
+    "AC %": 0.11023622047244094,
+    "AC GLIDESLOPE %": 0.7783345263660225,
+    "RC GOAL": 2,
+    "RC GROSS": 2,
+    "RC LOSS": 0,
+    "RC ATTN": 2,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 2,
+    "NAT LOSS": 0,
+    "NAT ATTN": 2,
+    "NAT %": 2,
+    "NAT GLIDESLOPE %": 14.121212121212123,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 8,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.125,
+    "NUKE GLIDESLOPE %": 0.8825757575757577,
+    "NSO GOAL": 7,
+    "NSO GROSS": 1,
+    "NSO LOSS": 0,
+    "NSO ATTN": 1,
+    "NSO %": 0.14285714285714285,
+    "NSO GLIDESLOPE %": 1.0086580086580088,
+    "NNS GOAL": 8,
+    "NNS GROSS": 1,
+    "NNS LOSS": 2,
+    "NNS ATTN": -1,
+    "NNS %": -0.125,
+    "NNS GLIDESLOPE %": -0.8825757575757577,
+    "AC TTCU GOAL": 56,
+    "AC TTCU GROSS": 9,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 8,
+    "AC TTCU %": 0.14285714285714285,
+    "PRI RATE GOAL": 12,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.25,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0.8825757575757577,
+    "ALNAV_CHANGE_PCT": -0.06081486701641714
+  },
+  {
+    "DIVISION": "DIV 3",
+    "SIZE": "MEDIUM",
+    "STATIONS": "HUN BEACH",
+    "ALNAV GOAL": 65,
+    "ALNAV GROSS": 9,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 8,
+    "ALNAV %": 0.12307692307692308,
+    "ALNAV GLIDESLOPE %": 0.8689976689976691,
+    "AC GOAL": 64,
+    "AC GROSS": 8,
+    "AC LOSS": 1,
+    "AC ATTN": 7,
+    "AC %": 0.109375,
+    "AC GLIDESLOPE %": 0.7722537878787881,
+    "RC GOAL": 0,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 1,
+    "RC GLIDESLOPE %": 1,
+    "NAT GOAL": 0,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.2,
+    "NUKE GLIDESLOPE %": 1.4121212121212123,
+    "NSO GOAL": 5,
+    "NSO GROSS": 2,
+    "NSO LOSS": 0,
+    "NSO ATTN": 2,
+    "NSO %": 0.4,
+    "NSO GLIDESLOPE %": 2.8242424242424247,
+    "NNS GOAL": 4,
+    "NNS GROSS": 0,
+    "NNS LOSS": 1,
+    "NNS ATTN": -1,
+    "NNS %": -0.25,
+    "NNS GLIDESLOPE %": -1.7651515151515154,
+    "AC TTCU GOAL": 39,
+    "AC TTCU GROSS": 7,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 6,
+    "AC TTCU %": 0.15384615384615385,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 1,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 0,
+    "PRI RATE %": 0,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 1.4121212121212123,
+    "ALNAV_CHANGE_PCT": -0.060347060347060166
+  },
+  {
+    "DIVISION": "DIV 3",
+    "SIZE": "MEDIUM",
+    "STATIONS": "MISSION VIEJO",
+    "ALNAV GOAL": 68,
+    "ALNAV GROSS": 8,
+    "ALNAV LOSS": 0,
+    "ALNAV ATTN": 8,
+    "ALNAV %": 0.11764705882352941,
+    "ALNAV GLIDESLOPE %": 0.8306595365418896,
+    "AC GOAL": 67,
+    "AC GROSS": 8,
+    "AC LOSS": 0,
+    "AC ATTN": 8,
+    "AC %": 0.11940298507462686,
+    "AC GLIDESLOPE %": 0.8430574400723656,
+    "RC GOAL": 1,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 0,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 1,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 8,
+    "NUKE GROSS": 2,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 2,
+    "NUKE %": 0.25,
+    "NUKE GLIDESLOPE %": 1.7651515151515154,
+    "NSO GOAL": 7,
+    "NSO GROSS": 0,
+    "NSO LOSS": 1,
+    "NSO ATTN": -1,
+    "NSO %": -0.14285714285714285,
+    "NSO GLIDESLOPE %": -1.0086580086580088,
+    "NNS GOAL": 4,
+    "NNS GROSS": 2,
+    "NNS LOSS": 0,
+    "NNS ATTN": 2,
+    "NNS %": 0.5,
+    "NNS GLIDESLOPE %": 3.5303030303030307,
+    "AC TTCU GOAL": 41,
+    "AC TTCU GROSS": 5,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 5,
+    "AC TTCU %": 0.12195121951219512,
+    "PRI RATE GOAL": 6,
+    "PRI RATE GROSS": 0,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": -1,
+    "PRI RATE %": -0.16666666666666666,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 1.7651515151515154,
+    "ALNAV_CHANGE_PCT": -0.0576846900376311
+  },
+  {
+    "DIVISION": "DIV 1",
+    "SIZE": "MEGA",
+    "STATIONS": "NATIONAL CITY",
+    "ALNAV GOAL": 155,
+    "ALNAV GROSS": 25,
+    "ALNAV LOSS": 7,
+    "ALNAV ATTN": 18,
+    "ALNAV %": 0.11612903225806452,
+    "ALNAV GLIDESLOPE %": 0.8199413489736072,
+    "AC GOAL": 151,
+    "AC GROSS": 24,
+    "AC LOSS": 7,
+    "AC ATTN": 17,
+    "AC %": 0.11258278145695365,
+    "AC GLIDESLOPE %": 0.7949026690748546,
+    "RC GOAL": 4,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 0.25,
+    "RC GLIDESLOPE %": 1.7651515151515154,
+    "NAT GOAL": 2,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 2,
+    "TAR GROSS": 1,
+    "TAR LOSS": 0,
+    "TAR ATTN": 1,
+    "TAR %": 0.5,
+    "TAR GLIDESLOPE %": 3.5303030303030307,
+    "NUKE GOAL": 6,
+    "NUKE GROSS": 3,
+    "NUKE LOSS": 1,
+    "NUKE ATTN": 2,
+    "NUKE %": 0.3333333333333333,
+    "NUKE GLIDESLOPE %": 2.353535353535354,
+    "NSO GOAL": 7,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 6,
+    "NNS GROSS": 2,
+    "NNS LOSS": 2,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 96,
+    "AC TTCU GROSS": 19,
+    "AC TTCU LOSS": 2,
+    "AC TTCU ATTN": 17,
+    "AC TTCU %": 0.17708333333333334,
+    "PRI RATE GOAL": 16,
+    "PRI RATE GROSS": 8,
+    "PRI RATE LOSS": 3,
+    "PRI RATE ATTN": 5,
+    "PRI RATE %": 0.3125,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 2.353535353535354,
+    "ALNAV_CHANGE_PCT": 0.20751602041924644
+  },
+  {
+    "DIVISION": "DIV 4",
+    "SIZE": "MEDIUM",
+    "STATIONS": "MORENO VALLEY",
+    "ALNAV GOAL": 80,
+    "ALNAV GROSS": 14,
+    "ALNAV LOSS": 5,
+    "ALNAV ATTN": 9,
+    "ALNAV %": 0.1125,
+    "ALNAV GLIDESLOPE %": 0.7943181818181819,
+    "AC GOAL": 78,
+    "AC GROSS": 13,
+    "AC LOSS": 2,
+    "AC ATTN": 11,
+    "AC %": 0.14102564102564102,
+    "AC GLIDESLOPE %": 0.995726495726496,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 3,
+    "RC ATTN": -2,
+    "RC %": -1,
+    "RC GLIDESLOPE %": -7.060606060606061,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 1,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 2,
+    "TAR ATTN": -2,
+    "TAR %": -2,
+    "TAR GLIDESLOPE %": -14.121212121212123,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 3,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 5,
+    "NNS GROSS": 2,
+    "NNS LOSS": 0,
+    "NNS ATTN": 2,
+    "NNS %": 0.4,
+    "NNS GLIDESLOPE %": 2.8242424242424247,
+    "AC TTCU GOAL": 41,
+    "AC TTCU GROSS": 7,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 6,
+    "AC TTCU %": 0.14634146341463414,
+    "PRI RATE GOAL": 6,
+    "PRI RATE GROSS": 5,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 4,
+    "PRI RATE %": 0.6666666666666666,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": 0.039225589225589386
+  },
+  {
+    "DIVISION": "DIV 1",
+    "SIZE": "MEDIUM",
+    "STATIONS": "IMPERIAL BEACH",
+    "ALNAV GOAL": 84,
+    "ALNAV GROSS": 11,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 8,
+    "ALNAV %": 0.09523809523809523,
+    "ALNAV GLIDESLOPE %": 0.6724386724386725,
+    "AC GOAL": 82,
+    "AC GROSS": 11,
+    "AC LOSS": 2,
+    "AC ATTN": 9,
+    "AC %": 0.10975609756097561,
+    "AC GLIDESLOPE %": 0.7749445676274945,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 1,
+    "RC ATTN": -1,
+    "RC %": -0.5,
+    "RC GLIDESLOPE %": -3.5303030303030307,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 1,
+    "TAR ATTN": -1,
+    "TAR %": -1,
+    "TAR GLIDESLOPE %": -7.060606060606061,
+    "NUKE GOAL": 6,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 6,
+    "NSO GROSS": 2,
+    "NSO LOSS": 0,
+    "NSO ATTN": 2,
+    "NSO %": 0.3333333333333333,
+    "NSO GLIDESLOPE %": 2.353535353535354,
+    "NNS GOAL": 6,
+    "NNS GROSS": 2,
+    "NNS LOSS": 0,
+    "NNS ATTN": 2,
+    "NNS %": 0.3333333333333333,
+    "NNS GLIDESLOPE %": 2.353535353535354,
+    "AC TTCU GOAL": 56,
+    "AC TTCU GROSS": 6,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 5,
+    "AC TTCU %": 0.08928571428571429,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.375,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": 0.05603655603655611
+  },
+  {
+    "DIVISION": "DIV 3",
+    "SIZE": "MEDIUM",
+    "STATIONS": "ANAHEIM",
+    "ALNAV GOAL": 65,
+    "ALNAV GROSS": 10,
+    "ALNAV LOSS": 4,
+    "ALNAV ATTN": 6,
+    "ALNAV %": 0.09230769230769231,
+    "ALNAV GLIDESLOPE %": 0.6517482517482518,
+    "AC GOAL": 64,
+    "AC GROSS": 10,
+    "AC LOSS": 4,
+    "AC ATTN": 6,
+    "AC %": 0.09375,
+    "AC GLIDESLOPE %": 0.6619318181818183,
+    "RC GOAL": 1,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 0,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 1,
+    "NUKE GOAL": 4,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.25,
+    "NUKE GLIDESLOPE %": 1.7651515151515154,
+    "NSO GOAL": 2,
+    "NSO GROSS": 1,
+    "NSO LOSS": 1,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 5,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.2,
+    "NNS GLIDESLOPE %": 1.4121212121212123,
+    "AC TTCU GOAL": 37,
+    "AC TTCU GROSS": 8,
+    "AC TTCU LOSS": 2,
+    "AC TTCU ATTN": 6,
+    "AC TTCU %": 0.16216216216216217,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 5,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 4,
+    "PRI RATE %": 0.5714285714285714,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 1.7651515151515154,
+    "ALNAV_CHANGE_PCT": 0.25345765345765353
+  },
+  {
+    "DIVISION": "DIV 6",
+    "SIZE": "SMALL",
+    "STATIONS": "REDLANDS",
+    "ALNAV GOAL": 87,
+    "ALNAV GROSS": 9,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 8,
+    "ALNAV %": 0.09195402298850575,
+    "ALNAV GLIDESLOPE %": 0.6492511320097528,
+    "AC GOAL": 85,
+    "AC GROSS": 9,
+    "AC LOSS": 1,
+    "AC ATTN": 8,
+    "AC %": 0.09411764705882353,
+    "AC GLIDESLOPE %": 0.6645276292335117,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 6,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.16666666666666666,
+    "NUKE GLIDESLOPE %": 1.176767676767677,
+    "NSO GOAL": 5,
+    "NSO GROSS": 2,
+    "NSO LOSS": 0,
+    "NSO ATTN": 2,
+    "NSO %": 0.4,
+    "NSO GLIDESLOPE %": 2.8242424242424247,
+    "NNS GOAL": 6,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.16666666666666666,
+    "NNS GLIDESLOPE %": 1.176767676767677,
+    "AC TTCU GOAL": 55,
+    "AC TTCU GROSS": 4,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 3,
+    "AC TTCU %": 0.05454545454545454,
+    "PRI RATE GOAL": 9,
+    "PRI RATE GROSS": 1,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 1,
+    "PRI RATE %": 0.1111111111111111,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 1.176767676767677,
+    "ALNAV_CHANGE_PCT": 0.05410426100081289
+  },
+  {
+    "DIVISION": "DIV 6",
+    "SIZE": "SMALL",
+    "STATIONS": "FONTANA",
+    "ALNAV GOAL": 77,
+    "ALNAV GROSS": 8,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 7,
+    "ALNAV %": 0.09090909090909091,
+    "ALNAV GLIDESLOPE %": 0.6418732782369146,
+    "AC GOAL": 75,
+    "AC GROSS": 7,
+    "AC LOSS": 0,
+    "AC ATTN": 7,
+    "AC %": 0.09333333333333334,
+    "AC GLIDESLOPE %": 0.6589898989898991,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 1,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 1,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 7,
+    "NUKE GROSS": 1,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 1,
+    "NUKE %": 0.14285714285714285,
+    "NUKE GLIDESLOPE %": 1.0086580086580088,
+    "NSO GOAL": 5,
+    "NSO GROSS": 0,
+    "NSO LOSS": 1,
+    "NSO ATTN": -1,
+    "NSO %": -0.2,
+    "NSO GLIDESLOPE %": -1.4121212121212123,
+    "NNS GOAL": 6,
+    "NNS GROSS": 0,
+    "NNS LOSS": 0,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 55,
+    "AC TTCU GROSS": 3,
+    "AC TTCU LOSS": 0,
+    "AC TTCU ATTN": 3,
+    "AC TTCU %": 0.05454545454545454,
+    "PRI RATE GOAL": 9,
+    "PRI RATE GROSS": 5,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 5,
+    "PRI RATE %": 0.5555555555555556,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 1.0086580086580088,
+    "ALNAV_CHANGE_PCT": -0.030565394201757634
+  },
+  {
+    "DIVISION": "DIV 7",
+    "SIZE": "MEDIUM",
+    "STATIONS": "RED ROCK",
+    "ALNAV GOAL": 77,
+    "ALNAV GROSS": 10,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 7,
+    "ALNAV %": 0.09090909090909091,
+    "ALNAV GLIDESLOPE %": 0.6418732782369146,
+    "AC GOAL": 75,
+    "AC GROSS": 10,
+    "AC LOSS": 3,
+    "AC ATTN": 7,
+    "AC %": 0.09333333333333334,
+    "AC GLIDESLOPE %": 0.6589898989898991,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 5,
+    "NUKE GROSS": 2,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 2,
+    "NUKE %": 0.4,
+    "NUKE GLIDESLOPE %": 2.8242424242424247,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 5,
+    "NNS GROSS": 1,
+    "NNS LOSS": 2,
+    "NNS ATTN": -1,
+    "NNS %": -0.2,
+    "NNS GLIDESLOPE %": -1.4121212121212123,
+    "AC TTCU GOAL": 53,
+    "AC TTCU GROSS": 5,
+    "AC TTCU LOSS": 2,
+    "AC TTCU ATTN": 3,
+    "AC TTCU %": 0.05660377358490566,
+    "PRI RATE GOAL": 7,
+    "PRI RATE GROSS": 2,
+    "PRI RATE LOSS": 0,
+    "PRI RATE ATTN": 2,
+    "PRI RATE %": 0.2857142857142857,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 2.8242424242424247,
+    "ALNAV_CHANGE_PCT": 0.08150771787135436
+  },
+  {
+    "DIVISION": "DIV 5",
+    "SIZE": "LARGE",
+    "STATIONS": "BREA",
+    "ALNAV GOAL": 85,
+    "ALNAV GROSS": 9,
+    "ALNAV LOSS": 3,
+    "ALNAV ATTN": 6,
+    "ALNAV %": 0.07058823529411765,
+    "ALNAV GLIDESLOPE %": 0.49839572192513376,
+    "AC GOAL": 83,
+    "AC GROSS": 8,
+    "AC LOSS": 3,
+    "AC ATTN": 5,
+    "AC %": 0.060240963855421686,
+    "AC GLIDESLOPE %": 0.4253377144943411,
+    "RC GOAL": 2,
+    "RC GROSS": 1,
+    "RC LOSS": 0,
+    "RC ATTN": 1,
+    "RC %": 0.5,
+    "RC GLIDESLOPE %": 3.5303030303030307,
+    "NAT GOAL": 1,
+    "NAT GROSS": 1,
+    "NAT LOSS": 0,
+    "NAT ATTN": 1,
+    "NAT %": 1,
+    "NAT GLIDESLOPE %": 7.060606060606061,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 6,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 4,
+    "NSO GROSS": 0,
+    "NSO LOSS": 0,
+    "NSO ATTN": 0,
+    "NSO %": 0,
+    "NSO GLIDESLOPE %": 0,
+    "NNS GOAL": 6,
+    "NNS GROSS": 1,
+    "NNS LOSS": 0,
+    "NNS ATTN": 1,
+    "NNS %": 0.16666666666666666,
+    "NNS GLIDESLOPE %": 1.176767676767677,
+    "AC TTCU GOAL": 50,
+    "AC TTCU GROSS": 7,
+    "AC TTCU LOSS": 3,
+    "AC TTCU ATTN": 4,
+    "AC TTCU %": 0.08,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 1,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 0,
+    "PRI RATE %": 0,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": -0.009229550406020859
+  },
+  {
+    "DIVISION": "DIV 5",
+    "SIZE": "MEDIUM",
+    "STATIONS": "RANCHO CUCAMONGA",
+    "ALNAV GOAL": 81,
+    "ALNAV GROSS": 6,
+    "ALNAV LOSS": 1,
+    "ALNAV ATTN": 5,
+    "ALNAV %": 0.06172839506172839,
+    "ALNAV GLIDESLOPE %": 0.4358398802843248,
+    "AC GOAL": 79,
+    "AC GROSS": 6,
+    "AC LOSS": 1,
+    "AC ATTN": 5,
+    "AC %": 0.06329113924050633,
+    "AC GLIDESLOPE %": 0.44687380130418114,
+    "RC GOAL": 2,
+    "RC GROSS": 0,
+    "RC LOSS": 0,
+    "RC ATTN": 0,
+    "RC %": 0,
+    "RC GLIDESLOPE %": 0,
+    "NAT GOAL": 1,
+    "NAT GROSS": 0,
+    "NAT LOSS": 0,
+    "NAT ATTN": 0,
+    "NAT %": 0,
+    "NAT GLIDESLOPE %": 0,
+    "TAR GOAL": 1,
+    "TAR GROSS": 0,
+    "TAR LOSS": 0,
+    "TAR ATTN": 0,
+    "TAR %": 0,
+    "TAR GLIDESLOPE %": 0,
+    "NUKE GOAL": 7,
+    "NUKE GROSS": 0,
+    "NUKE LOSS": 0,
+    "NUKE ATTN": 0,
+    "NUKE %": 0,
+    "NUKE GLIDESLOPE %": 0,
+    "NSO GOAL": 5,
+    "NSO GROSS": 2,
+    "NSO LOSS": 0,
+    "NSO ATTN": 2,
+    "NSO %": 0.4,
+    "NSO GLIDESLOPE %": 2.8242424242424247,
+    "NNS GOAL": 5,
+    "NNS GROSS": 0,
+    "NNS LOSS": 0,
+    "NNS ATTN": 0,
+    "NNS %": 0,
+    "NNS GLIDESLOPE %": 0,
+    "AC TTCU GOAL": 51,
+    "AC TTCU GROSS": 3,
+    "AC TTCU LOSS": 1,
+    "AC TTCU ATTN": 2,
+    "AC TTCU %": 0.0392156862745098,
+    "PRI RATE GOAL": 8,
+    "PRI RATE GROSS": 4,
+    "PRI RATE LOSS": 1,
+    "PRI RATE ATTN": 3,
+    "PRI RATE %": 0.375,
+    "TIER": "BELOW",
+    "LEVEL": 0,
+    "REWARD": "",
+    "NF GLIDESLOPE %": 0,
+    "ALNAV_CHANGE_PCT": 0.009685330672985104
+  }
+        ];
+        
+        // ============================================
+        // END CONFIGURATION
+        // ============================================
+        
+        let processedData = REPORT_DATA;
+        let stationClickMap = [];
+        
+        const reportCanvas = document.getElementById('reportCanvas');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const modalStationName = document.getElementById('modalStationName');
+        const modalBadges = document.getElementById('modalBadges');
+        const modalBody = document.getElementById('modalBody');
+        
+        const COLORS = {
+            NAVY_DARK: '#0a1929',
+            CARD_BG: '#1a2332',
+            ZEUS_GOLD: '#ffd600',
+            GOLD: '#FFB81C',
+            POSEIDON_BLUE: '#2196f3',
+            TRITON_TEAL: '#00acc1',
+            WARRIOR_GREEN: '#00e676',
+            DARK_GREEN: '#00c853',
+            ACCENT_CYAN: '#00e5ff',
+            WHITE: '#ffffff',
+            LIGHT_GRAY: '#b0bec5'
+        };
+        
+        // Generate report on page load
+        window.addEventListener('load', () => {
+            if (REPORT_DATA.length === 0) {
+                document.querySelector('.instruction').innerHTML = '⚠️ <strong>No report data loaded.</strong> Please generate a report using the generator tool first.';
+                return;
+            }
+            generateReport();
+        });
+        
+        function calculateNeeded(station) {
+            const alnavPct = station['ALNAV GLIDESLOPE %'];
+            const acPct = station['AC GLIDESLOPE %'];
+            const nsoPct = station['NSO GLIDESLOPE %'];
+            const nfPct = station['NF GLIDESLOPE %'];
+            
+            const acGoal = station['AC GOAL'] || 0;
+            const nsoGoal = station['NSO GOAL'] || 0;
+            const nfGoal = station['NUKE GOAL'] || 0;
+            const alnavGoal = station['ALNAV GOAL'] || 0;
+            
+            const acAttn = station['AC ATTN'] || 0;
+            const nsoAttn = station['NSO ATTN'] || 0;
+            const nfAttn = station['NUKE ATTN'] || 0;
+            const alnavAttn = station['ALNAV ATTN'] || 0;
+            
+            const nextDay = REPORT_CONFIG.nextProductionDay;
+            const nextGlideslope = nextDay / 233;
+            
+            let parts = [];
+            
+            if (station.TIER === 'ZEUS') {
+                if (station.LEVEL < 3) {
+                    if (acPct < 1.40) {
+                        const requiredByNext = Math.ceil(acGoal * nextGlideslope * 1.40);
+                        const needed = requiredByNext - acAttn;
+                        if (needed > 0) parts.push(`${needed} AC`);
+                    }
+                    if (nfPct < 1.40) {
+                        const requiredByNext = Math.ceil(nfGoal * nextGlideslope * 1.40);
+                        const needed = requiredByNext - nfAttn;
+                        if (needed > 0) parts.push(`${needed} NF`);
+                    }
+                    if (nsoPct < 1.40) {
+                        const requiredByNext = Math.ceil(nsoGoal * nextGlideslope * 1.40);
+                        const needed = requiredByNext - nsoAttn;
+                        if (needed > 0) parts.push(`${needed} NSO`);
+                    }
+                }
+                if (parts.length > 0) {
+                    return `For Level 3: ${parts.join(', ')} by day ${nextDay}`;
+                }
+            } else if (station.TIER === 'POSEIDON') {
+                if (station.LEVEL < 2) {
+                    if (acPct < 1.20) {
+                        const requiredByNext = Math.ceil(acGoal * nextGlideslope * 1.20);
+                        const needed = requiredByNext - acAttn;
+                        if (needed > 0) parts.push(`${needed} AC`);
+                    }
+                    if (nfPct < 1.20) {
+                        const requiredByNext = Math.ceil(nfGoal * nextGlideslope * 1.20);
+                        const needed = requiredByNext - nfAttn;
+                        if (needed > 0) parts.push(`${needed} NF`);
+                    }
+                    if (nsoPct < 1.20) {
+                        const requiredByNext = Math.ceil(nsoGoal * nextGlideslope * 1.20);
+                        const needed = requiredByNext - nsoAttn;
+                        if (needed > 0) parts.push(`${needed} NSO`);
+                    }
+                }
+                if (parts.length > 0) {
+                    return `For Level 2: ${parts.join(', ')} by day ${nextDay}`;
+                }
+                
+                if (alnavPct < 1.40) {
+                    const requiredByNext = Math.ceil(alnavGoal * nextGlideslope * 1.40);
+                    const needed = requiredByNext - alnavAttn;
+                    if (needed > 0) return `For Zeus: ${needed} ALNAV by day ${nextDay}`;
+                }
+            } else if (station.TIER === 'TRITON') {
+                if (station.LEVEL < 2) {
+                    if (acPct < 1.0) {
+                        const requiredByNext = Math.ceil(acGoal * nextGlideslope * 1.0);
+                        const needed = requiredByNext - acAttn;
+                        if (needed > 0) parts.push(`${needed} AC`);
+                    }
+                    if (nfPct < 1.0) {
+                        const requiredByNext = Math.ceil(nfGoal * nextGlideslope * 1.0);
+                        const needed = requiredByNext - nfAttn;
+                        if (needed > 0) parts.push(`${needed} NF`);
+                    }
+                    if (nsoPct < 1.0) {
+                        const requiredByNext = Math.ceil(nsoGoal * nextGlideslope * 1.0);
+                        const needed = requiredByNext - nsoAttn;
+                        if (needed > 0) parts.push(`${needed} NSO`);
+                    }
+                }
+                if (parts.length > 0) {
+                    return `For Level 2: ${parts.join(', ')} by day ${nextDay}`;
+                }
+                
+                if (alnavPct < 1.20) {
+                    const requiredByNext = Math.ceil(alnavGoal * nextGlideslope * 1.20);
+                    const needed = requiredByNext - alnavAttn;
+                    if (needed > 0) return `For Poseidon: ${needed} ALNAV by day ${nextDay}`;
+                }
+            } else if (station.TIER === 'BELOW') {
+                if (alnavPct < 1.00) {
+                    const requiredByNext = Math.ceil(alnavGoal * nextGlideslope * 1.0);
+                    const needed = requiredByNext - alnavAttn;
+                    if (needed > 0) return `For Triton: ${needed} ALNAV by day ${nextDay}`;
+                }
+            }
+            
+            return '';
+        }
+        
+        function generateReport() {
+            stationClickMap = [];
+            const canvasWidth = 1600;
+            const canvasHeight = 2400;
+            const scale = 3;
+            
+            reportCanvas.width = canvasWidth * scale;
+            reportCanvas.height = canvasHeight * scale;
+            reportCanvas.style.width = canvasWidth + 'px';
+            reportCanvas.style.height = canvasHeight + 'px';
+            
+            const ctx = reportCanvas.getContext('2d');
+            ctx.scale(scale, scale);
+            
+            ctx.fillStyle = COLORS.NAVY_DARK;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            
+            let y = 0;
+            
+            y = drawHeaderOps(ctx, y, canvasWidth);
+            y += 10;
+            
+            y = drawWeeklyWarriorsOps(ctx, y, canvasWidth);
+            y += 10;
+            
+            y = drawZeusTierOps(ctx, y, canvasWidth);
+            y += 10;
+            
+            y = drawPoseidonTierOps(ctx, y, canvasWidth);
+            y += 10;
+            
+            y = drawTritonTierOps(ctx, y, canvasWidth);
+            y += 10;
+            
+            drawOnTheCuspOps(ctx, y, canvasWidth);
+        }
+        
+        function drawHeaderOps(ctx, startY, canvasWidth) {
+            ctx.fillStyle = COLORS.CARD_BG;
+            ctx.fillRect(0, 0, canvasWidth, 65);
+            
+            ctx.fillStyle = COLORS.WHITE;
+            ctx.font = 'bold 20px "Barlow Condensed"';
+            ctx.textAlign = 'center';
+            ctx.fillText('NTAG SOUTHWEST', canvasWidth / 2, 20);
+            
+            ctx.font = 'bold 18px "Barlow Condensed"';
+            ctx.fillText('WEEKLY NRS INCENTIVE EARNERS', canvasWidth / 2, 28);
+            
+            ctx.font = '13px Inter';
+            ctx.fillStyle = COLORS.LIGHT_GRAY;
+            ctx.fillText(`Cutoff ${REPORT_CONFIG.reportDate.toUpperCase()}`, canvasWidth / 2, 48);
+            
+            ctx.fillStyle = COLORS.GOLD;
+            roundRect(ctx, canvasWidth - 180, 15, 70, 22, 10, true);
+            ctx.fillStyle = COLORS.NAVY_DARK;
+            ctx.font = 'bold 11px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('FY26', canvasWidth - 145, 30);
+            
+            ctx.fillStyle = COLORS.ACCENT_CYAN;
+            roundRect(ctx, canvasWidth - 100, 15, 80, 22, 10, true);
+            ctx.fillStyle = COLORS.NAVY_DARK;
+            ctx.fillText(`Day ${REPORT_CONFIG.currentProductionDay}`, canvasWidth - 60, 30);
+            
+            return 75;
+        }
+        
+        function drawWeeklyWarriorsOps(ctx, startY, canvasWidth) {
+            let y = startY;
+            
+            const warriors = processedData
+                .filter(s => s.ALNAV_CHANGE_PCT && s.ALNAV_CHANGE_PCT > 0)
+                .sort((a, b) => b.ALNAV_CHANGE_PCT - a.ALNAV_CHANGE_PCT)
+                .slice(0, 5)
+                .map(s => ({
+                    name: s.STATIONS,
+                    change: s.ALNAV_CHANGE_PCT * 100,
+                    current: s['ALNAV GLIDESLOPE %'] * 100
+                }));
+            
+            if (warriors.length === 0) return y;
+            
+            const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+            gradient.addColorStop(0, COLORS.WARRIOR_GREEN);
+            gradient.addColorStop(1, COLORS.DARK_GREEN);
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 50, y, canvasWidth - 100, 35, 8, true);
+            
+            ctx.fillStyle = COLORS.WHITE;
+            ctx.font = 'bold 16px "Barlow Condensed"';
+            ctx.textAlign = 'center';
+            ctx.fillText('🏆 WEEKLY WARRIORS – Top 5 Biggest Glideslope Improvements', canvasWidth / 2, y + 22);
+            
+            y += 45;
+            
+            warriors.forEach((w, i) => {
+                ctx.fillStyle = COLORS.CARD_BG;
+                roundRect(ctx, 60, y, canvasWidth - 120, 38, 8, true);
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 5;
+                ctx.fillStyle = COLORS.CARD_BG;
+                roundRect(ctx, 60, y, canvasWidth - 120, 38, 8, true);
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+                
+                const medals = ['🥇', '🥈', '🥉', '⭐', '⭐'];
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(medals[i], 80, y + 25);
+                
+                ctx.fillStyle = COLORS.WHITE;
+                ctx.font = 'bold 13px Inter';
+                ctx.fillText(`NRS ${w.name}`, 120, y + 20);
+                
+                ctx.fillStyle = COLORS.WARRIOR_GREEN;
+                ctx.font = 'bold 20px "Barlow Condensed"';
+                ctx.textAlign = 'right';
+                ctx.fillText(`+${w.change.toFixed(1)}%`, canvasWidth - 180, y + 24);
+                
+                ctx.font = '10px Inter';
+                ctx.fillStyle = COLORS.LIGHT_GRAY;
+                ctx.fillText(`now ${w.current.toFixed(1)}%`, canvasWidth - 80, y + 24);
+                
+                y += 45;
+            });
+            
+            return y + 15;
+        }
+        
+        function drawZeusTierOps(ctx, startY, canvasWidth) {
+            let y = startY;
+            
+            const zeusStations = processedData.filter(s => s.TIER === 'ZEUS');
+            if (zeusStations.length === 0) return y;
+            
+            const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+            gradient.addColorStop(0, COLORS.ZEUS_GOLD);
+            gradient.addColorStop(1, COLORS.GOLD);
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+            
+            ctx.fillStyle = COLORS.NAVY_DARK;
+            ctx.font = 'bold 20px "Barlow Condensed"';
+            ctx.textAlign = 'left';
+            ctx.fillText('⚡ ZEUS TIER (≥140% ALNAV)', 80, y + 25);
+            
+            y += 50;
+            
+            y = drawTierCards(ctx, zeusStations, y, canvasWidth, COLORS.ZEUS_GOLD, 1);
+            
+            return y + 15;
+        }
+        
+        function drawPoseidonTierOps(ctx, startY, canvasWidth) {
+            let y = startY;
+            
+            const poseidonStations = processedData.filter(s => s.TIER === 'POSEIDON');
+            if (poseidonStations.length === 0) return y;
+            
+            const zeusCount = processedData.filter(s => s.TIER === 'ZEUS').length;
+            
+            const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+            gradient.addColorStop(0, COLORS.POSEIDON_BLUE);
+            gradient.addColorStop(1, '#1565C0');
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+            
+            ctx.fillStyle = COLORS.WHITE;
+            ctx.font = 'bold 20px "Barlow Condensed"';
+            ctx.textAlign = 'left';
+            ctx.fillText('🔱 POSEIDON TIER (≥120% ALNAV)', 80, y + 25);
+            
+            y += 50;
+            
+            y = drawTierCards(ctx, poseidonStations, y, canvasWidth, COLORS.POSEIDON_BLUE, zeusCount + 1);
+            
+            return y + 15;
+        }
+        
+        function drawTritonTierOps(ctx, startY, canvasWidth) {
+            let y = startY;
+            
+            const tritonStations = processedData.filter(s => s.TIER === 'TRITON');
+            if (tritonStations.length === 0) return y;
+            
+            const aboveCount = processedData.filter(s => s.TIER === 'ZEUS' || s.TIER === 'POSEIDON').length;
+            
+            const gradient = ctx.createLinearGradient(50, y, canvasWidth - 50, y);
+            gradient.addColorStop(0, COLORS.TRITON_TEAL);
+            gradient.addColorStop(1, '#00838F');
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+            
+            ctx.fillStyle = COLORS.WHITE;
+            ctx.font = 'bold 20px "Barlow Condensed"';
+            ctx.textAlign = 'left';
+            ctx.fillText('🛡️ TRITON TIER (≥100% ALNAV) - Polo Mondays', 80, y + 25);
+            
+            y += 50;
+            
+            y = drawTierCards(ctx, tritonStations, y, canvasWidth, COLORS.TRITON_TEAL, aboveCount + 1);
+            
+            return y + 15;
+        }
+        
+        function drawOnTheCuspOps(ctx, startY, canvasWidth) {
+            let y = startY;
+            
+            const belowStations = processedData.filter(s => s.TIER === 'BELOW' && s['ALNAV GLIDESLOPE %'] >= 0.80);
+            if (belowStations.length === 0) return y;
+            
+            const aboveCount = processedData.filter(s => s.TIER !== 'BELOW').length;
+            
+            ctx.fillStyle = '#455a64';
+            roundRect(ctx, 50, y, canvasWidth - 100, 38, 8, true);
+            
+            ctx.fillStyle = COLORS.WHITE;
+            ctx.font = 'bold 20px "Barlow Condensed"';
+            ctx.textAlign = 'left';
+            ctx.fillText('⚠️ ON THE CUSP', 80, y + 25);
+            
+            y += 50;
+            
+            drawTierCards(ctx, belowStations, y, canvasWidth, '#757575', aboveCount + 1);
+        }
+        
+        function drawTierCards(ctx, stations, startY, canvasWidth, accentColor, startRank) {
+            let y = startY;
+            let rank = startRank;
+            const cardWidth = (canvasWidth - 160) / 2;
+            const cardHeight = 95;
+            const gap = 15;
+            
+            stations.forEach((station, idx) => {
+                const col = idx % 2;
+                const xPos = 60 + col * (cardWidth + gap);
+                
+                if (col === 0 && idx > 0) y += cardHeight + gap;
+                
+                stationClickMap.push({
+                    x: xPos,
+                    y: y,
+                    width: cardWidth,
+                    height: cardHeight,
+                    station: station
+                });
+                
+                ctx.shadowColor = 'rgba(0,0,0,0.4)';
+                ctx.shadowBlur = 12;
+                ctx.shadowOffsetY = 6;
+                ctx.fillStyle = COLORS.CARD_BG;
+                roundRect(ctx, xPos, y, cardWidth, cardHeight, 8, true);
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+                
+                ctx.fillStyle = accentColor;
+                ctx.beginPath();
+                ctx.arc(xPos + 22, y + 22, 16, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.fillStyle = COLORS.NAVY_DARK;
+                ctx.font = 'bold 12px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(rank.toString(), xPos + 22, y + 27);
+                rank++;
+                
+                ctx.fillStyle = COLORS.WHITE;
+                ctx.font = 'bold 13px Inter';
+                ctx.textAlign = 'left';
+                ctx.fillText(`NRS ${station.STATIONS}`, xPos + 45, y + 20);
+                
+                const pct = station['ALNAV GLIDESLOPE %'] * 100;
+                ctx.fillStyle = pct >= 140 ? COLORS.ZEUS_GOLD : pct >= 120 ? COLORS.POSEIDON_BLUE : pct >= 100 ? COLORS.TRITON_TEAL : COLORS.LIGHT_GRAY;
+                ctx.font = 'bold 24px "Barlow Condensed"';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${pct.toFixed(1)}%`, xPos + cardWidth - 12, y + 24);
+                
+                const acPct = (station['AC GLIDESLOPE %'] * 100).toFixed(1);
+                const nfPct = (station['NF GLIDESLOPE %'] * 100).toFixed(1);
+                const nsoPct = (station['NSO GLIDESLOPE %'] * 100).toFixed(1);
+                
+                ctx.fillStyle = COLORS.LIGHT_GRAY;
+                ctx.font = '9px Inter';
+                ctx.textAlign = 'left';
+                ctx.fillText(`${acPct}% AC  |  ${nfPct}% NF  |  ${nsoPct}% NSO`, xPos + 45, y + 36);
+                
+                ctx.fillStyle = COLORS.ACCENT_CYAN;
+                ctx.font = 'bold 8px Inter';
+                const rewardText = station.REWARD || '';
+                const maxRewardLength = 42;
+                const displayReward = rewardText.length > maxRewardLength ? rewardText.substring(0, maxRewardLength) + '...' : rewardText;
+                ctx.fillText(displayReward, xPos + 45, y + 50);
+                
+                const needed = calculateNeeded(station);
+                if (needed) {
+                    ctx.fillStyle = COLORS.GOLD;
+                    ctx.font = 'italic 8px Inter';
+                    const maxNeededLength = 46;
+                    const displayNeeded = needed.length > maxNeededLength ? needed.substring(0, maxNeededLength) + '...' : needed;
+                    ctx.fillText(`(${displayNeeded})`, xPos + 45, y + 62);
+                }
+                
+                const barY = y + cardHeight - 16;
+                const barWidth = cardWidth - 60;
+                const acVal = station['AC GLIDESLOPE %'];
+                const nsoVal = station['NSO GLIDESLOPE %'];
+                const nfVal = station['NF GLIDESLOPE %'];
+                
+                const total = Math.max(acVal + nsoVal + nfVal, 0.1);
+                const acWidth = (acVal / total) * barWidth;
+                const nsoWidth = (nsoVal / total) * barWidth;
+                const nfWidth = (nfVal / total) * barWidth;
+                
+                ctx.fillStyle = COLORS.POSEIDON_BLUE;
+                if (acWidth > 0) roundRect(ctx, xPos + 45, barY, acWidth, 8, 4, true);
+                
+                ctx.fillStyle = COLORS.WARRIOR_GREEN;
+                if (nsoWidth > 0) roundRect(ctx, xPos + 45 + acWidth, barY, nsoWidth, 8, 4, true);
+                
+                ctx.fillStyle = COLORS.ZEUS_GOLD;
+                if (nfWidth > 0) roundRect(ctx, xPos + 45 + acWidth + nsoWidth, barY, nfWidth, 8, 4, true);
+                
+                ctx.font = '7px Inter';
+                ctx.fillStyle = COLORS.LIGHT_GRAY;
+                ctx.textAlign = 'left';
+                ctx.fillText('AC', xPos + 45, y + cardHeight - 4);
+                ctx.textAlign = 'center';
+                ctx.fillText('NSO', xPos + 45 + barWidth / 2, y + cardHeight - 4);
+                ctx.textAlign = 'right';
+                ctx.fillText('NF', xPos + 45 + barWidth, y + cardHeight - 4);
+            });
+            
+            if (stations.length % 2 === 1) y += cardHeight + gap;
+            
+            return y + cardHeight + gap;
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius, fill) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            if (fill) ctx.fill();
+            else ctx.stroke();
+        }
+        
+        reportCanvas.addEventListener('click', (e) => {
+            const rect = reportCanvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (reportCanvas.width / rect.width) / 3;
+            const y = (e.clientY - rect.top) * (reportCanvas.height / rect.height) / 3;
+            
+            for (const region of stationClickMap) {
+                if (x >= region.x && x <= region.x + region.width &&
+                    y >= region.y && y <= region.y + region.height) {
+                    showStationModal(region.station);
+                    break;
+                }
+            }
+        });
+        
+        function showStationModal(station) {
+            modalStationName.textContent = `NRS ${station.STATIONS}`;
+            
+            let badgeHtml = '';
+            if (station.TIER === 'ZEUS') {
+                badgeHtml = `<span class="modal-tier-badge" style="background: ${COLORS.ZEUS_GOLD}; color: ${COLORS.NAVY_DARK};">⚡ ZEUS TIER - Level ${station.LEVEL}</span>`;
+            } else if (station.TIER === 'POSEIDON') {
+                badgeHtml = `<span class="modal-tier-badge" style="background: ${COLORS.POSEIDON_BLUE}; color: white;">🔱 POSEIDON TIER - Level ${station.LEVEL}</span>`;
+            } else if (station.TIER === 'TRITON') {
+                badgeHtml = `<span class="modal-tier-badge" style="background: ${COLORS.TRITON_TEAL}; color: white;">🛡️ TRITON TIER - Level ${station.LEVEL}</span>`;
+            } else {
+                badgeHtml = `<span class="modal-tier-badge" style="background: #757575; color: white;">⚠️ ON THE CUSP</span>`;
+            }
+            
+            if (station.REWARD) {
+                badgeHtml += `<span class="modal-tier-badge" style="background: ${COLORS.ACCENT_CYAN}; color: ${COLORS.NAVY_DARK};">🎯 ${station.REWARD}</span>`;
+            }
+            
+            modalBadges.innerHTML = badgeHtml;
+            
+            const currentDay = REPORT_CONFIG.currentProductionDay;
+            const nextDay = REPORT_CONFIG.nextProductionDay;
+            const futureDay = nextDay + (nextDay - currentDay);
+            
+            let modalContent = `
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">ALNAV Glideslope</div>
+                        <div class="stat-value" style="color: ${station['ALNAV GLIDESLOPE %'] >= 1.4 ? COLORS.ZEUS_GOLD : station['ALNAV GLIDESLOPE %'] >= 1.2 ? COLORS.POSEIDON_BLUE : station['ALNAV GLIDESLOPE %'] >= 1.0 ? COLORS.TRITON_TEAL : COLORS.LIGHT_GRAY};">
+                            ${(station['ALNAV GLIDESLOPE %'] * 100).toFixed(1)}%
+                        </div>
+                        <div class="stat-subtext">${station['ALNAV ATTN'] || 0} of ${station['ALNAV GOAL'] || 0} goal</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Rank</div>
+                        <div class="stat-value">#${processedData.findIndex(s => s.STATIONS === station.STATIONS) + 1}</div>
+                        <div class="stat-subtext">of ${processedData.length} stations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Production Day</div>
+                        <div class="stat-value">${currentDay}</div>
+                        <div class="stat-subtext">of 233 FY days</div>
+                    </div>
+            `;
+            
+            if (station.ALNAV_CHANGE_PCT !== 0) {
+                modalContent += `
+                    <div class="stat-card">
+                        <div class="stat-label">Week Change</div>
+                        <div class="stat-value" style="color: ${station.ALNAV_CHANGE_PCT > 0 ? COLORS.WARRIOR_GREEN : '#ff5252'};">
+                            ${station.ALNAV_CHANGE_PCT > 0 ? '+' : ''}${(station.ALNAV_CHANGE_PCT * 100).toFixed(1)}%
+                        </div>
+                        <div class="stat-subtext">since last report</div>
+                    </div>
+                `;
+            }
+            
+            modalContent += `</div>`;
+            
+            modalContent += `<div class="section-title">📊 Mission Areas Breakdown</div>`;
+            
+            const missions = [
+                {
+                    name: 'Active Component (AC)',
+                    percent: station['AC GLIDESLOPE %'] * 100,
+                    attn: station['AC ATTN'] || 0,
+                    goal: station['AC GOAL'] || 0,
+                    color: COLORS.POSEIDON_BLUE
+                },
+                {
+                    name: 'Nuclear Field (NF)',
+                    percent: station['NF GLIDESLOPE %'] * 100,
+                    attn: station['NUKE ATTN'] || 0,
+                    goal: station['NUKE GOAL'] || 0,
+                    color: COLORS.ZEUS_GOLD
+                },
+                {
+                    name: 'Navy Special Ops (NSO)',
+                    percent: station['NSO GLIDESLOPE %'] * 100,
+                    attn: station['NSO ATTN'] || 0,
+                    goal: station['NSO GOAL'] || 0,
+                    color: COLORS.WARRIOR_GREEN
+                }
+            ];
+            
+            missions.forEach(mission => {
+                const nextGlideslope = nextDay / 233;
+                const futureGlideslope = futureDay / 233;
+                const neededNext = Math.max(0, Math.ceil(mission.goal * nextGlideslope) - mission.attn);
+                const neededFuture = Math.max(0, Math.ceil(mission.goal * futureGlideslope) - mission.attn);
+                
+                modalContent += `
+                    <div class="mission-area" style="border-left-color: ${mission.color};">
+                        <div class="mission-header">
+                            <div class="mission-name">${mission.name}</div>
+                            <div class="mission-percent" style="color: ${mission.color};">${mission.percent.toFixed(1)}%</div>
+                        </div>
+                        <div class="mission-details">
+                            <div class="mission-detail-item">
+                                <div style="font-size: 11px;">Current</div>
+                                <div class="mission-detail-value">${mission.attn} / ${mission.goal}</div>
+                            </div>
+                            <div class="mission-detail-item">
+                                <div style="font-size: 11px;">Day ${nextDay} Target</div>
+                                <div class="mission-detail-value">${Math.ceil(mission.goal * nextGlideslope)}</div>
+                            </div>
+                            <div class="mission-detail-item">
+                                <div style="font-size: 11px;">Day ${futureDay} Target</div>
+                                <div class="mission-detail-value">${Math.ceil(mission.goal * futureGlideslope)}</div>
+                            </div>
+                        </div>
+                        <div class="projection-timeline">
+                            <div class="projection-card">
+                                <div class="projection-day">By Day ${nextDay}</div>
+                                <div class="projection-target">${neededNext > 0 ? 'Need ' + neededNext : '✓ On Track'}</div>
+                            </div>
+                            <div class="projection-card">
+                                <div class="projection-day">By Day ${futureDay}</div>
+                                <div class="projection-target">${neededFuture > 0 ? 'Need ' + neededFuture : '✓ On Track'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            modalContent += `
+                <div class="section-title">🎯 Tier Progression Path</div>
+                <div class="tier-progression">
+            `;
+            
+            const zeusL3Status = (station['ALNAV GLIDESLOPE %'] >= 1.4 && station['AC GLIDESLOPE %'] >= 1.4 && station['NSO GLIDESLOPE %'] >= 1.4 && station['NF GLIDESLOPE %'] >= 1.4) ? 'current' : 'locked';
+            const zeusL2Status = (station['ALNAV GLIDESLOPE %'] >= 1.4 && (station['AC GLIDESLOPE %'] >= 1.0 ? 1 : 0) + (station['NSO GLIDESLOPE %'] >= 1.0 ? 1 : 0) + (station['NF GLIDESLOPE %'] >= 1.0 ? 1 : 0) >= 2) ? (zeusL3Status === 'current' ? 'locked' : 'current') : 'achievable';
+            const zeusL1Status = station['ALNAV GLIDESLOPE %'] >= 1.4 ? (zeusL3Status === 'current' || zeusL2Status === 'current' ? 'locked' : 'current') : 'achievable';
+            
+            modalContent += `
+                <div class="progression-item" style="border-left-color: ${COLORS.ZEUS_GOLD};">
+                    <div class="progression-tier">
+                        ⚡ ZEUS TIER Level 3
+                        <span class="progression-status status-${zeusL3Status}">${zeusL3Status.toUpperCase()}</span>
+                    </div>
+                    <div class="progression-requirements">
+                        ≥140% ALNAV AND ≥140% AC, NSO, NF<br>
+                        <strong>Reward:</strong> Recurring 96-hour special liberty
+                    </div>
+                </div>
+                <div class="progression-item" style="border-left-color: ${COLORS.ZEUS_GOLD};">
+                    <div class="progression-tier">
+                        ⚡ ZEUS TIER Level 2
+                        <span class="progression-status status-${zeusL2Status}">${zeusL2Status.toUpperCase()}</span>
+                    </div>
+                    <div class="progression-requirements">
+                        ≥140% ALNAV AND 2 of 3 subgoals ≥100%<br>
+                        <strong>Reward:</strong> Recurring 72-hour special liberty
+                    </div>
+                </div>
+                <div class="progression-item" style="border-left-color: ${COLORS.ZEUS_GOLD};">
+                    <div class="progression-tier">
+                        ⚡ ZEUS TIER Level 1
+                        <span class="progression-status status-${zeusL1Status}">${zeusL1Status.toUpperCase()}</span>
+                    </div>
+                    <div class="progression-requirements">
+                        ≥140% ALNAV only<br>
+                        <strong>Reward:</strong> 96-hour special liberty (one time per quarter)
+                    </div>
+                </div>
+            `;
+            
+            const posL2Status = (station['ALNAV GLIDESLOPE %'] >= 1.2 && station['AC GLIDESLOPE %'] >= 1.2 && station['NSO GLIDESLOPE %'] >= 1.2 && station['NF GLIDESLOPE %'] >= 1.2) ? 'current' : 'achievable';
+            const posL1Status = station['ALNAV GLIDESLOPE %'] >= 1.2 ? (posL2Status === 'current' ? 'locked' : 'current') : 'achievable';
+            
+            modalContent += `
+                <div class="progression-item" style="border-left-color: ${COLORS.POSEIDON_BLUE};">
+                    <div class="progression-tier">
+                        🔱 POSEIDON TIER Level 2
+                        <span class="progression-status status-${posL2Status}">${posL2Status.toUpperCase()}</span>
+                    </div>
+                    <div class="progression-requirements">
+                        ≥120% ALNAV AND ≥120% AC, NSO, NF<br>
+                        <strong>Reward:</strong> Recurring 72-hour special liberty
+                    </div>
+                </div>
+                <div class="progression-item" style="border-left-color: ${COLORS.POSEIDON_BLUE};">
+                    <div class="progression-tier">
+                        🔱 POSEIDON TIER Level 1
+                        <span class="progression-status status-${posL1Status}">${posL1Status.toUpperCase()}</span>
+                    </div>
+                    <div class="progression-requirements">
+                        ≥120% ALNAV only<br>
+                        <strong>Reward:</strong> 96-hour special liberty (one time per quarter)
+                    </div>
+                </div>
+            `;
+            
+            const tritonL2Status = (station['ALNAV GLIDESLOPE %'] >= 1.0 && station['AC GLIDESLOPE %'] >= 1.0 && station['NSO GLIDESLOPE %'] >= 1.0 && station['NF GLIDESLOPE %'] >= 1.0) ? 'current' : 'achievable';
+            const tritonL1Status = station['ALNAV GLIDESLOPE %'] >= 1.0 ? (tritonL2Status === 'current' ? 'locked' : 'current') : 'achievable';
+            
+            modalContent += `
+                <div class="progression-item" style="border-left-color: ${COLORS.TRITON_TEAL};">
+                    <div class="progression-tier">
+                        🛡️ TRITON TIER Level 2
+                        <span class="progression-status status-${tritonL2Status}">${tritonL2Status.toUpperCase()}</span>
+                    </div>
+                    <div class="progression-requirements">
+                        ≥100% ALNAV AND ≥100% AC, NSO, NF<br>
+                        <strong>Reward:</strong> 1x 72-hour special liberty
+                    </div>
+                </div>
+                <div class="progression-item" style="border-left-color: ${COLORS.TRITON_TEAL};">
+                    <div class="progression-tier">
+                        🛡️ TRITON TIER Level 1
+                        <span class="progression-status status-${tritonL1Status}">${tritonL1Status.toUpperCase()}</span>
+                    </div>
+                    <div class="progression-requirements">
+                        ≥100% ALNAV only<br>
+                        <strong>Reward:</strong> Polo Mondays
+                    </div>
+                </div>
+            </div>
+            `;
+            
+            modalBody.innerHTML = modalContent;
+            modalOverlay.classList.add('active');
+        }
+        
+        modalClose.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+        
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
