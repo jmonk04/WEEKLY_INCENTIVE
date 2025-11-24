@@ -2738,7 +2738,7 @@
     "NF GLIDESLOPE %": 0,
     "ALNAV_CHANGE_PCT": 0.009685330672985104
   }
-]
+];
         
         // ============================================
         // END CONFIGURATION
@@ -2904,21 +2904,21 @@
             let y = 0;
             
             y = drawHeaderOps(ctx, y, canvasWidth);
-            y += 10;
+            y += 8;
             
             y = drawWeeklyWarriorsOps(ctx, y, canvasWidth);
-            y += 10;
+            y += 8;
             
             y = drawZeusTierOps(ctx, y, canvasWidth);
-            y += 10;
+            y += 8;
             
             y = drawPoseidonTierOps(ctx, y, canvasWidth);
-            y += 10;
+            y += 8;
             
             y = drawTritonTierOps(ctx, y, canvasWidth);
-            y += 10;
+            y += 8;
             
-            drawOnTheCuspOps(ctx, y, canvasWidth);
+            y = drawOnTheCuspOps(ctx, y, canvasWidth);
         }
         
         function drawHeaderOps(ctx, startY, canvasWidth) {
@@ -3038,7 +3038,7 @@
                 y += 50;
                 y = drawTierCards(ctx, zeusL3, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
                 rankCounter += zeusL3.length;
-                y += 5;
+                y += 2;
             }
             
             // Zeus Level 2
@@ -3060,7 +3060,7 @@
                 y += 50;
                 y = drawTierCards(ctx, zeusL2, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
                 rankCounter += zeusL2.length;
-                y += 5;
+                y += 2;
             }
             
             // Zeus Level 1
@@ -3081,7 +3081,7 @@
                 
                 y += 50;
                 y = drawTierCards(ctx, zeusL1, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
-                y += 10;
+                y += 8;
             }
             
             return y;
@@ -3112,7 +3112,7 @@
                 y += 50;
                 y = drawTierCards(ctx, poseidonL2, y, canvasWidth, COLORS.POSEIDON_BLUE, rankCounter);
                 rankCounter += poseidonL2.length;
-                y += 5;
+                y += 2;
             }
             
             // Poseidon Level 1
@@ -3133,7 +3133,7 @@
                 
                 y += 50;
                 y = drawTierCards(ctx, poseidonL1, y, canvasWidth, COLORS.POSEIDON_BLUE, rankCounter);
-                y += 10;
+                y += 8;
             }
             
             return y;
@@ -3164,7 +3164,7 @@
                 y += 50;
                 y = drawTierCards(ctx, tritonL2, y, canvasWidth, COLORS.TRITON_TEAL, rankCounter);
                 rankCounter += tritonL2.length;
-                y += 5;
+                y += 2;
             }
             
             // Triton Level 1
@@ -3185,7 +3185,7 @@
                 
                 y += 50;
                 y = drawTierCards(ctx, tritonL1, y, canvasWidth, COLORS.TRITON_TEAL, rankCounter);
-                y += 10;
+                y += 8;
             }
             
             return y;
@@ -3218,8 +3218,8 @@
             let y = startY;
             let rank = startRank;
             const cardWidth = (canvasWidth - 160) / 2;
-            const cardHeight = 95;
-            const gap = 15;
+            const cardHeight = 60; // Reduced from 95
+            const gap = 5; // Reduced from 15
             
             stations.forEach((station, idx) => {
                 const col = idx % 2;
