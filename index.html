@@ -3038,7 +3038,7 @@
                 y += 50;
                 y = drawTierCards(ctx, zeusL3, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
                 rankCounter += zeusL3.length;
-                y += 15;
+                y += 5;
             }
             
             // Zeus Level 2
@@ -3060,7 +3060,7 @@
                 y += 50;
                 y = drawTierCards(ctx, zeusL2, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
                 rankCounter += zeusL2.length;
-                y += 15;
+                y += 5;
             }
             
             // Zeus Level 1
@@ -3081,7 +3081,7 @@
                 
                 y += 50;
                 y = drawTierCards(ctx, zeusL1, y, canvasWidth, COLORS.ZEUS_GOLD, rankCounter);
-                y += 15;
+                y += 10;
             }
             
             return y;
@@ -3112,7 +3112,7 @@
                 y += 50;
                 y = drawTierCards(ctx, poseidonL2, y, canvasWidth, COLORS.POSEIDON_BLUE, rankCounter);
                 rankCounter += poseidonL2.length;
-                y += 15;
+                y += 5;
             }
             
             // Poseidon Level 1
@@ -3133,7 +3133,7 @@
                 
                 y += 50;
                 y = drawTierCards(ctx, poseidonL1, y, canvasWidth, COLORS.POSEIDON_BLUE, rankCounter);
-                y += 15;
+                y += 10;
             }
             
             return y;
@@ -3164,7 +3164,7 @@
                 y += 50;
                 y = drawTierCards(ctx, tritonL2, y, canvasWidth, COLORS.TRITON_TEAL, rankCounter);
                 rankCounter += tritonL2.length;
-                y += 15;
+                y += 5;
             }
             
             // Triton Level 1
@@ -3185,7 +3185,7 @@
                 
                 y += 50;
                 y = drawTierCards(ctx, tritonL1, y, canvasWidth, COLORS.TRITON_TEAL, rankCounter);
-                y += 15;
+                y += 10;
             }
             
             return y;
@@ -3209,7 +3209,9 @@
             
             y += 50;
             
-            drawTierCards(ctx, belowStations, y, canvasWidth, '#757575', aboveCount + 1);
+            y = drawTierCards(ctx, belowStations, y, canvasWidth, '#757575', aboveCount + 1);
+            
+            return y;
         }
         
         function drawTierCards(ctx, stations, startY, canvasWidth, accentColor, startRank) {
